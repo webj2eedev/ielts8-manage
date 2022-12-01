@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webj2eedev.ieltsnote.dao.TranslationDAO">
+    <select id="queryCatetory" parameterType="com.webj2eedev.ieltsnote.entity.TranslationCategoryDO" resultType="com.webj2eedev.ieltsnote.entity.TranslationCategoryDO">
+        SELECT id, parent_id, `order`, label_zh, label_en, comment
+        FROM
+            ieltsnote.translation_category
+        order by
+            if(ISNULL(`order`), 0, `order`) asc, label_en
+    </select>
+
+    <insert id="addSiblingCategory" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="com.webj2eedev.ieltsnote.entity.TranslationCategoryDO">
+        insert into ieltsnote.translation_category (parent_id, label_zh, label_en)
+        values
+            (#{parentId}, #{labelZh}, #{labelEn})
+    </insert>
+
+    <insert id="addChildCategory" parameterType="com.webj2eedev.ieltsnote.entity.TranslationCategoryDO">
+        insert into ieltsnote.translation_category (parent_id, label_zh, label_en)
+        values
+            (#{id}, #{labelZh}, #{labelEn})
+    </insert>
+
+    <select id="queryTranslations" parameterType="com.webj2eedev.ieltsnote.entity.TranslationCategoryDO" resultType="com.webj2eedev.ieltsnote.entity.TranslationExpressionDO">
+        select
+            cace.category,
+            cace.id expression_id,
+            cace.expression_zh,
+            cace.expression_en,
+            cace.comment expression_comment,
+            cace.creator expression_creator,
+            cace.create_time expression_create_time,
+            cace.update_time expression_update_time,
+            cacs.uid sample_id,
+            cacs.sample_zh,
+            cacs.sample_en,
+            cacs.comment sample_comment,
+            cacs.creator sample_creator,
+            cacs.create_time sample_create_time,
+            cacs.update_time sample_update_time
+        from
+            translation_expression cace
+        left join translation_sample cacs
+        on
+            cace.id = cacs.id
+        where cace.category  = #{id}
+        order by expression_en
+    </select>
+
+    <insert id="addExpression" useGeneratedKeys="true" keyProperty="expressionId" keyColumn="id" parameterType="com.webj2eedev.ieltsnote.entity.TranslationExpressionDO">
+        insert into ieltsnote.translation_expression (category, expression_zh, expression_en, comment, creator, create_time)
+        values
+        (#{category}, #{expressionZh},  #{expressionEn}, #{expressionComment}, #{expressionCreator}, NOW())
+    </insert>
+
+    <insert id="addSample" parameterType="com.webj2eedev.ieltsnote.entity.TranslationExpressionDO">
+        insert into ieltsnote.translation_sample (id, sample_zh, sample_en, comment, creator, create_time)
+        values
+        (#{expressionId}, #{sampleZh}, #{sampleEn}, #{sampleComment}, #{sampleCreator}, NOW())
+    </insert>
+
+    <delete id="deleteExpression" parameterType="com.webj2eedev.ieltsnote.entity.TranslationExpressionDO">
+        delete FROM ieltsnote.translation_expression
+        WHERE
+        id = #{expressionId}
+    </delete>
+
+    <delete id="deleteSample" parameterType="com.webj2eedev.ieltsnote.entity.TranslationExpressionDO">
+        delete FROM ieltsnote.translation_sample
+        WHERE
+        uid = #{sampleId}
+    </delete>
+
+    <insert id="log" parameterType="com.webj2eedev.ieltsnote.entity.TranslationLogDO">
+        INSERT INTO ieltsnote.translation_log
+        (`action`, part, category_id, category_label, question_id, question_text, creator, log_time)
+        VALUES(#{action}, #{part}, #{categoryId}, #{categoryLabel}, #{questionId}, #{questionText}, #{creator}, NOW());
+    </insert>
+
+    <select id="queryTranslationSummary" parameterType="com.webj2eedev.ieltsnote.entity.TranslationLogDO" resultType="com.webj2eedev.ieltsnote.entity.TranslationSummaryDO">
+        select
+            B.practice_day,
+            sum(if(B.part = 1, B.question_cnt,	0)) as zh_to_en,
+            sum(if(B.part = 2, B.question_cnt,	0)) as en_to_zh
+        from (
+            select
+                sl.part,
+                count(distinct question_id) question_cnt,
+                DATE_FORMAT(log_time, '%Y-%m-%d') practice_day
+            from
+                translation_log sl
+            where
+                creator = #{creator}
+            group by
+                practice_day, sl.part
+            ) as B
+        group by B.practice_day
+    </select>
+</mapper>
+

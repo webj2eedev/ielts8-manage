@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webj2eedev.ieltsnote.dao.WordTagDAO">
+    <select id="queryWordTags" resultType="com.webj2eedev.ieltsnote.entity.WordTagDO">
+        SELECT id, label, parent_id, creator, create_time, update_time, comment
+        FROM
+            ieltsnote.word_tag
+        WHERE
+            creator = #{wordTagDO.creator}
+        order by create_time asc
+    </select>
+
+    <select id="existWordTag" resultType="Boolean">
+        SELECT count(label) FROM ieltsnote.word_tag
+        WHERE
+            label = #{wordTagDO.label} and
+            creator = #{wordTagDO.creator}
+    </select>
+
+
+    <insert id="addWordTag" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="com.webj2eedev.ieltsnote.entity.WordTagDO">
+        INSERT INTO ieltsnote.word_tag(label, parent_id, creator, create_time, comment)
+        VALUES (#{label}, #{parent_id}, #{creator}, NOW(), #{comment})
+    </insert>
+
+    <delete id="deleteWordTag">
+        delete FROM ieltsnote.word_tag
+        WHERE id = #{wordTagDO.id}
+    </delete>
+
+    <update id="updateWordTag">
+        update ieltsnote.word_tag
+        set
+            label = #{wordTagDO.label},
+            comment = #{wordTagDO.comment},
+            update_time = NOW()
+        WHERE
+            id = #{wordTagDO.id}
+    </update>
+</mapper>
+

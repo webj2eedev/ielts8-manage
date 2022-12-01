@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webj2eedev.ieltsnote.dao.WordDictationDAO">
+    <insert id="createDictationSession" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="com.webj2eedev.ieltsnote.entity.WordDictationSessionDO">
+        INSERT INTO ieltsnote.word_dictation_session(parent_id, creator, create_time, complete)
+        VALUES (#{parentId}, #{creator}, NOW(), 0)
+    </insert>
+
+    <update id="completeDictationSession" parameterType="com.webj2eedev.ieltsnote.entity.WordDictationSessionDO">
+        update ieltsnote.word_dictation_session
+        set
+            complete = 1, complete_time = NOW()
+        WHERE
+            id = #{id}
+    </update>
+
+
+    <update id="cancelDictationSession" parameterType="com.webj2eedev.ieltsnote.entity.WordDictationSessionDO">
+        update ieltsnote.word_dictation_session
+        set
+            invalid = 1, invalid_time = NOW()
+        WHERE
+            id = #{id}
+    </update>
+
+    <insert id="createDictationSessionDetail" parameterType="com.webj2eedev.ieltsnote.entity.WordDictationSessionDO">
+        INSERT INTO ieltsnote.word_dictation_session_detail(id, wordNums, wordList)
+        VALUES (#{id}, #{wordNums}, #{wordList})
+    </insert>
+
+    <select id="queryDictationSession" resultType="com.webj2eedev.ieltsnote.entity.WordDictationSessionDO" parameterType="com.webj2eedev.ieltsnote.entity.WordDictationSessionDO">
+        SELECT wd.id, wd.parent_id, wd.creator, wd.create_time, wd.complete, wd.complete_time, wds.wordNums, wds.wordList
+        FROM ieltsnote.word_dictation_session wd, word_dictation_session_detail wds
+        WHERE wd.id = #{id} AND wd.id = wds.id
+        order by create_time desc
+    </select>
+
+    <insert id="addDictationSessionProgress" parameterType="com.webj2eedev.ieltsnote.entity.WordDictationProgressDO">
+        INSERT INTO ieltsnote.word_dictation_session_progress(id, word, progress, action, create_time)
+        VALUES (#{id}, #{word}, #{progress}, #{action}, NOW())
+    </insert>
+
+
+    <select id="queryDictationProgressSummary" resultType="com.webj2eedev.ieltsnote.entity.WordDictationProgressSummaryDO" parameterType="com.webj2eedev.ieltsnote.entity.WordDictationSessionDO">
+        select
+            wds.id,
+            wds.parent_id,
+            wds.creator,
+            wds.create_time,
+            wds.complete,
+            wds.complete_time,
+            wdsd.wordNums as validcnt,
+            count(wdsp.progress) as progresscnt,
+            count(if(wdsp.`action` = 0, 1, null)) as dontknowcount,
+            count(if(wdsp.`action` = 1, 1, null)) as knowcount,
+            count(if(wdsp.`action` = 2, 1, null)) as skipcount
+        from
+            word_dictation_session wds
+        left join word_dictation_session_detail wdsd
+        on
+            wds.id = wdsd.id
+        left join word_dictation_session_progress wdsp
+        on
+            wds.id = wdsp.id
+        where creator = #{creator}  and wds.invalid != 1
+        group by
+            wds.id
+    </select>
+
+
+    <select id="generateDictationWordList" resultType="com.webj2eedev.ieltsnote.entity.DictationWordDO" parameterType="com.webj2eedev.ieltsnote.entity.WordDictationSessionDO">
+        select
+            w.word,
+            count(wdsp.progress) as progresscnt,
+            count(if(wdsp.`action` = 0, 1, null)) as dontknowcount,
+            count(if(wdsp.`action` = 1, 1, null)) as knowcount,
+            count(if(wdsp.`action` = 2, 1, null)) as skipcount,
+            (count(if(wdsp.`action` = 0, 1, null)) / count(wdsp.progress)) as dontknowrate,
+            (count(if(wdsp.`action` = 2, 1, null)) / count(wdsp.progress)) as skiprate,
+            (count(if(wdsp.`action` = 1, 1, null)) / count(wdsp.progress)) as knowrate,
+            w.creator ,
+            max(wdsp.create_time) as create_time
+        from
+            word w
+        left join word_dictation_session_progress wdsp
+        on
+            w.word = wdsp.word
+        where
+            w.creator = #{creator}
+        group by
+            w.word
+        order by create_time asc, dontknowrate desc, skiprate desc
+    </select>
+
+
+    <select id="queryDictationReportDontknowWordList" parameterType="com.webj2eedev.ieltsnote.entity.WordDictationSessionDO" resultType="com.webj2eedev.ieltsnote.entity.WordDO">
+        select w.word from word w
+        left join word_dictation_session_progress wdsp
+        on w.word = wdsp.word
+        where
+            w.creator = #{creator}
+            and wdsp.id = #{id}
+            and wdsp.`action` = 0
+    </select>
+</mapper>
+

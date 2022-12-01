@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webj2eedev.ieltsnote.dao.WritingDAO">
+    <select id="queryCatetory" parameterType="com.webj2eedev.ieltsnote.entity.WritingCategoryDO" resultType="com.webj2eedev.ieltsnote.entity.WritingCategoryDO">
+        SELECT id, parent_id, `order`, label_zh, label_en, comment, storyline_category_id
+        FROM
+            ieltsnote.writing_category
+        order by
+            if(ISNULL(`order`), 0, `order`) asc, label_en
+    </select>
+
+    <insert id="addSiblingCategory" parameterType="com.webj2eedev.ieltsnote.entity.WritingCategoryDO">
+        insert into ieltsnote.writing_category (parent_id, label_zh, label_en)
+        values
+            (#{parentId}, #{labelZh}, #{labelEn})
+    </insert>
+
+    <insert id="addChildCategory" parameterType="com.webj2eedev.ieltsnote.entity.WritingCategoryDO">
+        insert into ieltsnote.writing_category (parent_id, label_zh, label_en)
+        values
+            (#{id}, #{labelZh}, #{labelEn})
+    </insert>
+
+    <update id="updateCategory" parameterType="com.webj2eedev.ieltsnote.entity.WritingCategoryDO">
+        update ieltsnote.writing_category
+        set
+            update_time = NOW()
+            <if test="storylineCategoryId!=null and storylineCategoryId!=''">
+                , storyline_category_id = #{storylineCategoryId}
+            </if >
+        WHERE
+            id = #{id}
+    </update>
+
+    <select id="queryWritings" parameterType="com.webj2eedev.ieltsnote.entity.WritingCategoryDO" resultType="com.webj2eedev.ieltsnote.entity.WritingExpressionDO">
+        select
+            cace.part,
+            cace.category,
+            cace.id expression_id,
+            cace.title expression_title,
+            cace.stem expression_stem,
+            cace.comment expression_comment,
+            cace.creator expression_creator,
+            cace.create_time expression_create_time,
+            cace.update_time expression_update_time,
+            cacs.uid sample_id,
+            cacs.draft sample_draft,
+            cacs.overall_band_score sample_overall_band_score,
+            cacs.draft_analyzer sample_draft_analyzer,
+            cacs.comment sample_comment,
+            cacs.creator sample_creator,
+            cacs.create_time sample_create_time,
+            cacs.update_time sample_update_time
+        from
+            writing_expression cace
+        left join writing_sample cacs
+        on
+            cace.id = cacs.id
+        where cace.category  = #{id}
+        order by expression_title
+    </select>
+
+    <insert id="addExpression" useGeneratedKeys="true" keyProperty="expressionId" keyColumn="id" parameterType="com.webj2eedev.ieltsnote.entity.WritingExpressionDO">
+        insert into ieltsnote.writing_expression (part, category, title, stem, comment, creator, create_time)
+        values
+        (#{part}, #{category}, #{expressionTitle},  #{expressionStem}, #{expressionComment}, #{expressionCreator}, NOW())
+    </insert>
+
+    <update id="updateExpression" parameterType="com.webj2eedev.ieltsnote.entity.WritingExpressionDO">
+        update ieltsnote.writing_expression
+        set
+            update_time = NOW()
+        <if test="expressionComment!=null and expressionComment!=''">
+            , comment = #{expressionComment}
+        </if >
+        <if test="expressionStem!=null and expressionStem!=''">
+            , stem = #{expressionStem}
+        </if >
+        WHERE
+            id = #{expressionId}
+    </update>
+
+    <delete id="deleteExpression" parameterType="com.webj2eedev.ieltsnote.entity.WritingExpressionDO">
+        delete FROM ieltsnote.writing_expression
+        WHERE
+        id = #{expressionId}
+    </delete>
+
+    <insert id="addSample" useGeneratedKeys="true" keyProperty="sampleId" keyColumn="uid" parameterType="com.webj2eedev.ieltsnote.entity.WritingExpressionDO">
+        insert into ieltsnote.writing_sample (id, draft, overall_band_score, draft_analyzer, comment, creator, create_time)
+        values
+        (#{expressionId}, #{sampleDraft}, #{sampleOverallBandScore}, #{sampleDraftAnalyzer}, #{sampleComment}, #{sampleCreator}, NOW())
+    </insert>
+
+    <update id="updateSample" parameterType="com.webj2eedev.ieltsnote.entity.WritingExpressionDO">
+        update ieltsnote.writing_sample
+        set
+            update_time = NOW()
+        <if test="sampleComment!=null and sampleComment!=''">
+            , comment = #{sampleComment}
+        </if >
+        <if test="sampleDraft!=null and sampleDraft!=''">
+            , draft = #{sampleDraft}
+        </if >
+        <if test="sampleDraftAnalyzer!=null and sampleDraftAnalyzer!=''">
+            , draft_analyzer = #{sampleDraftAnalyzer}
+        </if >
+        WHERE
+            uid = #{sampleId}
+    </update>
+
+    <delete id="deleteSample" parameterType="com.webj2eedev.ieltsnote.entity.WritingExpressionDO">
+        delete FROM ieltsnote.writing_sample
+        WHERE
+        uid = #{sampleId}
+    </delete>
+
+
+    <insert id="log" parameterType="com.webj2eedev.ieltsnote.entity.WritingLogDO">
+        INSERT INTO ieltsnote.writing_log
+        (`action`, part, category_id, category_label, expression_id, expression_text, sample_id, sample_text, creator, log_time)
+        VALUES(#{action}, #{part}, #{categoryId}, #{categoryLabel}, #{expressionId}, #{expressionText}, #{sampleId}, #{sampleText}, #{creator}, NOW());
+    </insert>
+
+    <select id="queryWritingSummary" parameterType="com.webj2eedev.ieltsnote.entity.WritingLogDO" resultType="com.webj2eedev.ieltsnote.entity.WritingSummaryDO">
+        select
+            B.practice_day,
+            sum(if(B.part = 1, B.question_cnt,	0)) as task1,
+            sum(if(B.part = 2, B.question_cnt,	0)) as task2
+        from (
+            select
+                sl.part,
+                count(distinct sample_id) question_cnt,
+                DATE_FORMAT(log_time, '%Y-%m-%d') practice_day
+            from
+                ieltsnote.writing_log sl
+            where
+                creator = #{creator}
+                and sample_id != -1
+            group by
+                practice_day, sl.part
+            ) as B
+        group by B.practice_day
+    </select>
+</mapper>
+

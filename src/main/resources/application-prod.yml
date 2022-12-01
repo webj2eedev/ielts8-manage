@@ -1,0 +1,7 @@
+nacos:
+  config:
+    server-addr: host.docker.internal:8848
+    type: yaml
+    bootstrap:
+      enable: true
+    data-id: ielts8-manage-prod

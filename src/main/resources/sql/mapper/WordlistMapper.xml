@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webj2eedev.ieltsnote.dao.WordlistDao">
+    <insert id="addWord" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.WordlistWordDO">
+        INSERT INTO ieltsnote.wordlist
+        (word, phonetic_british, phonetic_american, speech_british_ossid, speech_american_ossid, mind_pronunciation, mind_stress_position, comment, creator, create_time)
+        VALUES(#{word}, #{phoneticBritish}, #{phoneticAmerican}, #{speechBritishOssid}, #{speechAmericanOssid}, 0, 0, #{comment}, #{creator}, NOW());
+    </insert>
+</mapper>
+

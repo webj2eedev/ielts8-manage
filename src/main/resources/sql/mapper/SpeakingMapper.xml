@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webj2eedev.ieltsnote.dao.SpeakingDAO">
+    <select id="queryCatetory" parameterType="com.webj2eedev.ieltsnote.entity.SpeakingCategoryDO" resultType="com.webj2eedev.ieltsnote.entity.SpeakingCategoryDO">
+        select
+            id,
+            parent_id,
+            `order`,
+            label,
+            comment,
+            storyline_category_id,
+            tags
+        from
+            ieltsnote.speaking_category
+        order by
+            if(ISNULL(`order`), 0, `order`) asc, label
+    </select>
+
+    <insert id="addSiblingCategory" parameterType="com.webj2eedev.ieltsnote.entity.SpeakingCategoryDO">
+        insert into ieltsnote.speaking_category (parent_id, label)
+        values
+            (#{parentId}, #{label})
+    </insert>
+
+    <insert id="addChildCategory" parameterType="com.webj2eedev.ieltsnote.entity.SpeakingCategoryDO">
+        insert into ieltsnote.speaking_category (parent_id, label)
+        values
+            (#{id}, #{label})
+    </insert>
+
+
+    <update id="updateCategory" parameterType="com.webj2eedev.ieltsnote.entity.SpeakingCategoryDO">
+        update ieltsnote.speaking_category
+        set
+            update_time = NOW()
+        <if test="storylineCategoryId!=null and storylineCategoryId!=''">
+            , storyline_category_id = #{storylineCategoryId}
+        </if >
+        WHERE
+            id = #{id}
+    </update>
+
+    <select id="queryQAs" parameterType="com.webj2eedev.ieltsnote.entity.SpeakingCategoryDO" resultType="com.webj2eedev.ieltsnote.entity.SpeakingQADO">
+        select
+            st.part,
+            st.category,
+            st.id question_id,
+            st.correlation_id question_correlation_id,
+            st.question,
+            st.creator question_creator,
+            st.create_time question_create_time,
+            sta.uid answer_id,
+            sta.answer_thought,
+            sta.answer_text,
+            count(sam.uid) answer_mp3_cnt,
+            sta.cohesion_and_coherence_tags answer_cohesion_and_coherence_tags,
+            sta.embedded_resource,
+            sta.comment answer_comment,
+            sta.creator answer_creator,
+            sta.create_time answer_create_time,
+            sta.update_time answer_update_time
+        from
+            ieltsnote.speaking_question st
+        left join ieltsnote.speaking_answer sta
+            on
+            st.id = sta.id
+        left join speaking_answer_mp3 sam
+            on
+            sta.uid = sam.answer_id
+        where
+            st.category = #{id}
+        group by
+            st.part,
+            st.category ,
+            st.id ,
+            st.correlation_id ,
+            st.question ,
+            st.creator ,
+            sta.uid,
+            sta.answer_thought ,
+            sta.answer_text ,
+            sta.cohesion_and_coherence_tags,
+            sta.comment ,
+            sta.creator ,
+            sta.create_time ,
+            sta.update_time
+        order by
+            st.`order`,
+            st.create_time
+    </select>
+
+    <select id="filterQAs" parameterType="com.webj2eedev.ieltsnote.entity.SpeakingQAFilterDO" resultType="com.webj2eedev.ieltsnote.entity.SpeakingQADO">
+        select
+            st.part,
+            st.category,
+            st.id question_id,
+            st.correlation_id question_correlation_id,
+            st.question,
+            st.creator question_creator,
+            st.create_time question_create_time,
+            sta.uid answer_id,
+            sta.answer_thought,
+            sta.answer_text,
+            count(sam.uid) answer_mp3_cnt,
+            sta.cohesion_and_coherence_tags answer_cohesion_and_coherence_tags,
+            sta.embedded_resource,
+            sta.comment answer_comment,
+            sta.creator answer_creator,
+            sta.create_time answer_create_time,
+            sta.update_time answer_update_time
+        from
+            ieltsnote.speaking_question st
+        left join ieltsnote.speaking_answer sta
+            on
+            st.id = sta.id
+        left join speaking_answer_mp3 sam
+            on
+            sta.uid = sam.answer_id
+        where
+            st.part = #{part}
+            <if test="filters!=null">
+                and
+                <foreach item="filter" collection="filters" separator="or" open="(" close=")" index="">
+                    st.question like '%${filter}%'
+                </foreach>
+            </if >
+        group by
+            st.part,
+            st.category ,
+            st.id ,
+            st.correlation_id ,
+            st.question ,
+            st.creator ,
+            sta.uid,
+            sta.answer_thought ,
+            sta.answer_text ,
+            sta.cohesion_and_coherence_tags,
+            sta.comment ,
+            sta.creator ,
+            sta.create_time ,
+            sta.update_time
+        order by
+            st.`order`,
+            st.create_time
+    </select>
+
+    <insert id="addQuesion" parameterType="com.webj2eedev.ieltsnote.entity.SpeakingQADO">
+        insert into ieltsnote.speaking_question (correlation_id, part, category, question, creator, create_time)
+        values
+        (#{questionCorrelationId}, #{part}, #{category}, #{question}, #{questionCreator}, NOW())
+    </insert>
+
+    <update id="updateQuestion" parameterType="com.webj2eedev.ieltsnote.entity.SpeakingQADO">
+        update ieltsnote.speaking_question
+        set
+            update_time = NOW()
+            <if test="question!=null and question!=''">
+                , question = #{question}
+            </if >
+        WHERE
+            id = #{questionId}
+    </update>
+
+    <insert id="addAnswer" useGeneratedKeys="true" keyProperty="answerId" keyColumn="uid" parameterType="com.webj2eedev.ieltsnote.entity.SpeakingQADO">
+        insert into ieltsnote.speaking_answer (id, answer_thought, answer_text, embedded_resource, comment, creator, create_time)
+        values
+        (#{questionId}, #{answerThought}, #{answerText}, #{embeddedResource}, #{answerComment}, #{answerCreator}, NOW())
+    </insert>
+
+    <delete id="deleteAnswer" parameterType="com.webj2eedev.ieltsnote.entity.SpeakingQADO">
+        delete FROM ieltsnote.speaking_answer
+        WHERE
+            uid = #{answerId}
+    </delete>
+
+    <update id="updateAnswerThought" parameterType="com.webj2eedev.ieltsnote.entity.SpeakingQADO">
+        update ieltsnote.speaking_answer
+        set
+            answer_thought = #{answerThought}, update_time = NOW()
+        WHERE
+            uid = #{answerId}
+    </update>
+
+    <update id="updateAnswerComment" parameterType="com.webj2eedev.ieltsnote.entity.SpeakingQADO">
+        update ieltsnote.speaking_answer
+        set
+            comment = #{answerComment}, update_time = NOW()
+        WHERE
+            uid = #{answerId}
+    </update>
+
+    <update id="updateAnswerText" parameterType="com.webj2eedev.ieltsnote.entity.SpeakingQADO">
+        update ieltsnote.speaking_answer
+        set
+            answer_text = #{answerText}, update_time = NOW()
+        WHERE
+            uid = #{answerId}
+    </update>
+
+    <insert id="addAnswerMp3" parameterType="com.webj2eedev.ieltsnote.entity.SpeakingAnswerMp3DO">
+        insert into ieltsnote.speaking_answer_mp3(answer_id, answer_mp3_ossid, answer_mp3_duration, answer_video_ossid, answer_video_poster_ossid, answer_video_subtitle_ossid, create_time)
+        values(#{answerId}, #{answerMp3Ossid}, #{answerMp3Duration}, #{answerVideoOssid}, #{answerVideoPosterOssid}, #{answerVideoSubtitleOssid}, NOW())
+    </insert>
+
+    <select id="queryAnswerMp3s" parameterType="com.webj2eedev.ieltsnote.entity.SpeakingQADO" resultType="com.webj2eedev.ieltsnote.entity.SpeakingAnswerMp3DO">
+        select
+            sam.uid as mp3_id,
+            sam.answer_id,
+            sam.answer_mp3_ossid ,
+            sam.answer_mp3_duration,
+            sam.answer_video_ossid,
+            sam.answer_video_poster_ossid,
+            sam.answer_video_subtitle_ossid,
+            sam.comment ,
+            sam.creator ,
+            sam.create_time ,
+            sam.update_time
+        from
+            ieltsnote.speaking_answer_mp3 sam
+        where
+            sam.answer_id = #{answerId}
+        order by
+            create_time desc
+    </select>
+
+    <update id="updateAnswerCohesionAndCoherenceTags" parameterType="com.webj2eedev.ieltsnote.entity.SpeakingQADO">
+        update ieltsnote.speaking_answer
+        set
+            cohesion_and_coherence_tags = #{answerCohesionAndCoherenceTags}, update_time = NOW()
+        WHERE
+            uid = #{answerId}
+    </update>
+
+    <insert id="log" parameterType="com.webj2eedev.ieltsnote.entity.SpeakingLogDO">
+        INSERT INTO ieltsnote.speaking_log
+        (`action`, part, category_id, category_label, question_id, question_text, answer_id, answer_text, mp3_id, mp3_duration, creator, log_time)
+        VALUES(#{action}, #{part}, #{categoryId}, #{categoryLabel}, #{questionId}, #{questionText}, #{answerId}, #{answerText}, #{mp3Id}, #{mp3Duration}, #{creator}, NOW());
+    </insert>
+
+    <select id="querySpeakingSummary" parameterType="com.webj2eedev.ieltsnote.entity.SpeakingLogDO" resultType="com.webj2eedev.ieltsnote.entity.SpeakingSummaryDO">
+        select
+            B.practice_day,
+            sum(if(B.part = 1, B.question_cnt,	0)) as part1,
+            sum(if(B.part = 2, B.question_cnt,	0)) as part2,
+            sum(if(B.part = 3, B.question_cnt,	0)) as part3
+        from (
+            select
+                sl.part,
+                count(distinct answer_id) question_cnt,
+                DATE_FORMAT(log_time, '%Y-%m-%d') practice_day
+            from
+                speaking_log sl
+            where
+                creator = #{creator}
+            group by
+                practice_day, sl.part
+            ) as B
+        group by B.practice_day
+    </select>
+
+    <select id="queryRecentWork" resultType="com.webj2eedev.ieltsnote.entity.SpeakingRecentWorkDO">
+        select
+            distinct sq.part,
+            sc.label category,
+            sq.question,
+            (select max(sam2.create_time) from speaking_answer_mp3 sam2 where sam2.answer_id = sa.uid) create_time
+        from
+            speaking_category sc,
+            speaking_question sq,
+            speaking_answer sa ,
+            speaking_answer_mp3 sam
+        where
+            sq.part = 1
+            and sc.id = sq.category
+            and sq.id = sa.id
+            and sa.uid = sam.answer_id
+            and DATEDIFF(sam.create_time, NOW()) &lt;= 0
+            and DATEDIFF(sam.create_time, NOW()) > -30
+        order by
+            create_time desc
+    </select>
+</mapper>
+
