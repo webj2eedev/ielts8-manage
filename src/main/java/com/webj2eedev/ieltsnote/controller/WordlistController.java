@@ -30,7 +30,7 @@ public class WordlistController {
         if(word.indexOf(" ")  == -1) {
             // 获取音标
             try {
-                String[] phoneticSymbol = WordUtil.getWordPhoneticSymbol(word);
+                String[] phoneticSymbol = WordUtil.downloadWordPhoneticSymbol(word);
                 pdo.setPhoneticBritish(phoneticSymbol[0]);
                 pdo.setPhoneticBritish(phoneticSymbol[1]);
             } catch (IOException ex) {

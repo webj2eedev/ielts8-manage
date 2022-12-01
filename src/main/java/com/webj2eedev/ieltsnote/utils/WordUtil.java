@@ -22,7 +22,7 @@ public class WordUtil {
         return audioBytes;
     }
 
-    public static String[] getWordPhoneticSymbol(String word) throws IOException {
+    public static String[] downloadWordPhoneticSymbol(String word) throws IOException {
         String url = "https://www.youdao.com/result?word="+word+"&lang=en";
 
         OkHttpClient client = new OkHttpClient();
