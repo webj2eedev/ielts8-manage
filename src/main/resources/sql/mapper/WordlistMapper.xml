@@ -16,8 +16,17 @@
         update wordlist
         set
             update_time = NOW()
+            <if test="word!=null and word!=''">
+                , word = #{word}
+            </if >
+            <if test="phoneticBritish!=null and phoneticBritish!=''">
+                , phonetic_british = #{phoneticBritish}
+            </if >
             <if test="addCount!=null">
                 , add_count = #{addCount}
+            </if >
+            <if test="comment!=null and comment!=''">
+                , comment = #{comment}
             </if >
         WHERE
             uid = #{uid}
@@ -29,6 +38,17 @@
         WHERE
             word = #{word}
     </select>
+
+    <select id="queryWords" resultType="com.webj2eedev.ieltsnote.entity.WordDO">
+        SELECT uid, word, phonetic_british, phonetic_american, speech_british_ossid, speech_american_ossid, mind_pronunciation, mind_stress_position, add_count, comment, creator, create_time, update_time
+        FROM wordlist
+        WHERE
+            1 = 1
+            <if test="condition!=null and condition!=''">
+                word like '%#{condition}%'
+            </if >
+    </select>
+
 
     <select id="existWord" resultType="Boolean">
         SELECT count(word) FROM wordlist WHERE word = #{word}

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class WordlistBO {
@@ -21,8 +22,8 @@ public class WordlistBO {
 
     private final String WORDLIST_BUCKET_NAME = "wordlist-bucket";
 
-    public int addWord(String word) {
-        WordDO pdo = WordDO.builder().word(word).build();
+    public int addWord(String word, int creator) {
+        WordDO pdo = WordDO.builder().word(word).creator(creator).build();
 
         WordDO exist = this.queryWord(word);
         if (exist != null) {
@@ -83,6 +84,10 @@ public class WordlistBO {
 
     public WordDO queryWord(String word) {
         return dao.queryWord(word);
+    }
+
+    public List<WordDO> queryWords(String condition) {
+        return dao.queryWords(condition);
     }
 
     public boolean existWord(String word) {

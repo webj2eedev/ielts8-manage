@@ -9,7 +9,6 @@ import java.sql.Timestamp;
 
 @Builder
 @Data
-@AllArgsConstructor
 public class WordDO implements Serializable {
     private Integer uid;
     private String word;
@@ -21,7 +20,7 @@ public class WordDO implements Serializable {
     private Boolean mindStressPosition;
     private Integer addCount;
     private String comment;
-    private String creator;
+    private Integer creator;
     private Timestamp createTime;
     private Timestamp updateTime;
 }
