@@ -7,6 +7,7 @@ import com.webj2eedev.ieltsnote.bo.WordlistBO;
 import com.webj2eedev.ieltsnote.common.web.WrapperResponse;
 import com.webj2eedev.ieltsnote.dto.WordAddDTO;
 import com.webj2eedev.ieltsnote.dto.WordQueryDTO;
+import com.webj2eedev.ieltsnote.entity.WordCntNewlyAddedDO;
 import com.webj2eedev.ieltsnote.entity.WordDO;
 import com.webj2eedev.ieltsnote.utils.minio.MINIOClient;
 import com.webj2eedev.ieltsnote.utils.uuid.UUID;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/wordlist")
@@ -74,4 +76,10 @@ public class WordlistController {
         return WrapperResponse.ok(ret);
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/queryNewlyAddedWordCntSummary", method = {RequestMethod.POST})
+    public WrapperResponse<List<WordCntNewlyAddedDO>> queryNewlyAddedWordCntSummary() {
+        List<WordCntNewlyAddedDO> ret = bo.queryNewlyAddedWordCntSummary();
+        return WrapperResponse.ok(ret);
+    }
 }

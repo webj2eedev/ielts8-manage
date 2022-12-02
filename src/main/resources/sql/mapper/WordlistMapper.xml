@@ -53,5 +53,17 @@
     <select id="existWord" resultType="Boolean">
         SELECT count(word) FROM wordlist WHERE word = #{word}
     </select>
+
+    <select id="queryNewlyAddedWordCntSummary" resultType="com.webj2eedev.ieltsnote.entity.WordCntNewlyAddedDO">
+        select
+            count(1) `count`,
+            DATE_FORMAT(create_time , '%Y-%m-%d') `time`
+        from
+            wordlist w
+        group by
+            time
+        order by
+            time
+    </select>
 </mapper>
 

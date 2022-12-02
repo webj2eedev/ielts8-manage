@@ -1,5 +1,6 @@
 package com.webj2eedev.ieltsnote.dao;
 
+import com.webj2eedev.ieltsnote.entity.WordCntNewlyAddedDO;
 import com.webj2eedev.ieltsnote.entity.WordDO;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,4 +17,7 @@ public interface WordlistDao {
     List<WordDO> queryWords(@Param("condition") String condition);
 
     boolean existWord(@Param("word") String word);
+
+    List<WordCntNewlyAddedDO> queryNewlyAddedWordCntSummary();
+
 }

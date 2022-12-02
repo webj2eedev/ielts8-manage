@@ -1,6 +1,7 @@
 package com.webj2eedev.ieltsnote.bo;
 
 import com.webj2eedev.ieltsnote.dao.WordlistDao;
+import com.webj2eedev.ieltsnote.entity.WordCntNewlyAddedDO;
 import com.webj2eedev.ieltsnote.entity.WordDO;
 import com.webj2eedev.ieltsnote.utils.WordUtil;
 import com.webj2eedev.ieltsnote.utils.minio.MINIOClient;
@@ -94,4 +95,8 @@ public class WordlistBO {
         return dao.existWord(word);
     }
 
+    public List<WordCntNewlyAddedDO> queryNewlyAddedWordCntSummary() {
+        List<WordCntNewlyAddedDO> rDos = dao.queryNewlyAddedWordCntSummary();
+        return rDos;
+    }
 }
