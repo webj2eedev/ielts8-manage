@@ -19,13 +19,19 @@
             <if test="word!=null and word!=''">
                 , word = #{word}
             </if >
-            <if test="phoneticBritish!=null and phoneticBritish!=''">
+            <if test="phoneticBritish!=null">
                 , phonetic_british = #{phoneticBritish}
+            </if >
+            <if test="mindPronunciation!=null">
+                , mind_pronunciation = #{mindPronunciation}
+            </if >
+            <if test="mindStressPosition!=null">
+                , mind_stress_position = #{mindStressPosition}
             </if >
             <if test="addCount!=null">
                 , add_count = #{addCount}
             </if >
-            <if test="comment!=null and comment!=''">
+            <if test="comment!=null">
                 , comment = #{comment}
             </if >
         WHERE
