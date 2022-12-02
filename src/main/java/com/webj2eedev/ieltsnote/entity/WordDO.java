@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 @Builder
 @Data
 @AllArgsConstructor
-public class WordlistWordDO implements Serializable {
+public class WordDO implements Serializable {
     private Integer uid;
     private String word;
     private String phoneticBritish;
@@ -19,6 +19,7 @@ public class WordlistWordDO implements Serializable {
     private String speechAmericanOssid;
     private Boolean mindPronunciation;
     private Boolean mindStressPosition;
+    private Integer addCount;
     private String comment;
     private String creator;
     private Timestamp createTime;
