@@ -5,9 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.webj2eedev.ieltsnote.bo.WordlistBO;
 import com.webj2eedev.ieltsnote.common.web.WrapperResponse;
-import com.webj2eedev.ieltsnote.dto.WordAddDTO;
-import com.webj2eedev.ieltsnote.dto.WordQueryDTO;
-import com.webj2eedev.ieltsnote.dto.WordlistRefCreateDTO;
+import com.webj2eedev.ieltsnote.dto.*;
 import com.webj2eedev.ieltsnote.entity.WordCntNewlyAddedDO;
 import com.webj2eedev.ieltsnote.entity.WordDO;
 import com.webj2eedev.ieltsnote.utils.minio.MINIOClient;
@@ -51,8 +49,8 @@ public class WordlistController {
 
     @ResponseBody
     @RequestMapping(value = "/deleteWord", method = {RequestMethod.POST})
-    public WrapperResponse<Long> deleteWord(@RequestBody WordAddDTO pdto) {
-        Long ret = bo.deleteWord(pdto.getWord().trim());
+    public WrapperResponse<Long> deleteWord(@RequestBody WordDeleteDTO pdto) {
+        Long ret = bo.deleteWord(pdto.getUid());
         return WrapperResponse.ok(ret);
     }
 
@@ -89,5 +87,30 @@ public class WordlistController {
     public WrapperResponse<Integer> createRef(@RequestBody WordlistRefCreateDTO pdto) {
         int ret = bo.createRef(pdto.getLabel().trim(), pdto.getCreator());
         return WrapperResponse.ok(ret);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/addRefWord", method = {RequestMethod.POST})
+    public WrapperResponse<Integer> addRefWord(@RequestBody WordlistRefWordAddDTO pdto) {
+        Integer ret = bo.addRefWord(pdto.getRefId(), pdto.getWord().trim(), pdto.getCreator());
+        return WrapperResponse.ok(ret);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/deleteRefWord", method = {RequestMethod.POST})
+    public WrapperResponse<Long> deleteRefWord(@RequestBody WordlistRefWordDeleteDTO pdto) {
+        Long ret = bo.deleteRefWord(pdto.getRefId(), pdto.getWordId(), pdto.getCascade());
+        return WrapperResponse.ok(ret);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/queryRefWords", method = {RequestMethod.POST})
+    public WrapperResponse<PageInfo> queryRefWords(@RequestBody RefWordsQueryDTO pdto) {
+        Page<WordDO> objects = PageHelper.startPage(pdto.getPagenum(), pdto.getPagesize());
+
+        bo.queryRefWords(pdto.getRefId(), pdto.getCondition());
+
+        PageInfo<WordDO> pageInfo = new PageInfo<>(objects);
+        return WrapperResponse.ok(pageInfo);
     }
 }

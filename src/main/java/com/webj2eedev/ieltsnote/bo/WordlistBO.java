@@ -4,6 +4,7 @@ import com.webj2eedev.ieltsnote.dao.WordlistDao;
 import com.webj2eedev.ieltsnote.entity.WordCntNewlyAddedDO;
 import com.webj2eedev.ieltsnote.entity.WordDO;
 import com.webj2eedev.ieltsnote.entity.WordlistRefDO;
+import com.webj2eedev.ieltsnote.entity.WordlistRefWordDO;
 import com.webj2eedev.ieltsnote.utils.WordUtil;
 import com.webj2eedev.ieltsnote.utils.minio.MINIOClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,8 +75,8 @@ public class WordlistBO {
         }
     }
 
-    public Long deleteWord(String word) {
-        Long ret = dao.deleteWord(word);
+    public Long deleteWord(Integer uid) {
+        Long ret = dao.deleteWord(uid);
         return ret;
     }
 
@@ -106,4 +107,31 @@ public class WordlistBO {
         dao.createRef(pdo);
         return pdo.getUid();
     }
+
+    public int addRefWord(int refId, String word, int creator) {
+        int wordId;
+        WordDO exist = this.queryWord(word);
+        if (exist != null) {
+            wordId = exist.getUid();
+        } else {
+            wordId = this.addWord(word, creator);
+        }
+        WordlistRefWordDO pdo = WordlistRefWordDO.builder().refId(refId).wordId(wordId).creator(creator).build();
+        dao.addRefWord(pdo);
+        return pdo.getUid();
+    }
+
+    public Long deleteRefWord(int refId, int wordId, boolean cascade) {
+        if(cascade){
+            dao.deleteRefWord(refId, wordId);
+            return dao.deleteWord(wordId);
+        }else{
+            return dao.deleteRefWord(refId, wordId);
+        }
+    }
+
+    public List<WordDO> queryRefWords(int refId, String condition) {
+        return dao.queryRefWords(refId, condition);
+    }
+
 }

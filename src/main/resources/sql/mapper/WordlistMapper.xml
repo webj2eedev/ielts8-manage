@@ -9,7 +9,7 @@
 
     <delete id="deleteWord">
         delete FROM wordlist
-        WHERE word = #{word}
+        WHERE uid = #{uid}
     </delete>
 
     <update id="updateWord" parameterType="com.webj2eedev.ieltsnote.entity.WordDO">
@@ -79,5 +79,44 @@
         (label, comment, creator, create_time)
         VALUES(#{label}, #{comment}, #{creator}, NOW());
     </insert>
+
+    <insert id="addRefWord" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.WordlistRefWordDO">
+        INSERT INTO wordlist_ref_detail
+        (ref_id, word_id, comment, creator, create_time)
+        VALUES(#{refId}, #{wordId}, #{comment}, #{creator}, NOW());
+    </insert>
+
+    <delete id="deleteRefWord">
+        DELETE FROM wordlist_ref_detail
+        WHERE ref_id = #{refId} and word_id=#{wordId};
+    </delete>
+
+    <select id="queryRefWords" resultType="com.webj2eedev.ieltsnote.entity.WordDO">
+        select
+            w.uid,
+            w.word,
+            w.phonetic_british,
+            w.phonetic_american,
+            w.speech_british_ossid,
+            w.speech_american_ossid,
+            w.mind_spelling,
+            w.mind_pronunciation,
+            w.mind_stress_position,
+            w.add_count,
+            w.comment,
+            w.creator,
+            w.create_time,
+            w.update_time
+        from
+            wordlist w ,
+            wordlist_ref_detail wrd
+        where
+            w.uid = wrd.word_id
+            and wrd.ref_id = #{refId}
+            <if test="condition!=null and condition!=''">
+                and w.word like '%#{condition}%'
+            </if >
+    </select>
+
 </mapper>
 
