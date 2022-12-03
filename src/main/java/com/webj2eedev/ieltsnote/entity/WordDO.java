@@ -16,6 +16,7 @@ public class WordDO implements Serializable {
     private String phoneticAmerican;
     private String speechBritishOssid;
     private String speechAmericanOssid;
+    private Boolean mindSpelling;
     private Boolean mindPronunciation;
     private Boolean mindStressPosition;
     private Integer addCount;

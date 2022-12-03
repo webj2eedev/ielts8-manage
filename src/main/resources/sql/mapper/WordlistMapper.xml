@@ -3,8 +3,8 @@
 <mapper namespace="com.webj2eedev.ieltsnote.dao.WordlistDao">
     <insert id="addWord" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.WordDO">
         INSERT INTO wordlist
-        (word, phonetic_british, phonetic_american, speech_british_ossid, speech_american_ossid, mind_pronunciation, mind_stress_position, comment, creator, create_time)
-        VALUES(#{word}, #{phoneticBritish}, #{phoneticAmerican}, #{speechBritishOssid}, #{speechAmericanOssid}, 0, 0, #{comment}, #{creator}, NOW());
+        (word, phonetic_british, phonetic_american, speech_british_ossid, speech_american_ossid, mind_spelling, mind_pronunciation, mind_stress_position, comment, creator, create_time)
+        VALUES(#{word}, #{phoneticBritish}, #{phoneticAmerican}, #{speechBritishOssid}, #{speechAmericanOssid}, 0, 0, 0, #{comment}, #{creator}, NOW());
     </insert>
 
     <delete id="deleteWord">
@@ -21,6 +21,9 @@
             </if >
             <if test="phoneticBritish!=null">
                 , phonetic_british = #{phoneticBritish}
+            </if >
+            <if test="mindSpelling!=null">
+                , mind_spelling = #{mindSpelling}
             </if >
             <if test="mindPronunciation!=null">
                 , mind_pronunciation = #{mindPronunciation}
@@ -39,14 +42,14 @@
     </update>
 
     <select id="queryWord" resultType="com.webj2eedev.ieltsnote.entity.WordDO">
-        SELECT uid, word, phonetic_british, phonetic_american, speech_british_ossid, speech_american_ossid, mind_pronunciation, mind_stress_position, add_count, comment, creator, create_time, update_time
+        SELECT uid, word, phonetic_british, phonetic_american, speech_british_ossid, speech_american_ossid, mind_spelling, mind_pronunciation, mind_stress_position, add_count, comment, creator, create_time, update_time
         FROM wordlist
         WHERE
             word = #{word}
     </select>
 
     <select id="queryWords" resultType="com.webj2eedev.ieltsnote.entity.WordDO">
-        SELECT uid, word, phonetic_british, phonetic_american, speech_british_ossid, speech_american_ossid, mind_pronunciation, mind_stress_position, add_count, comment, creator, create_time, update_time
+        SELECT uid, word, phonetic_british, phonetic_american, speech_british_ossid, speech_american_ossid, mind_spelling, mind_pronunciation, mind_stress_position, add_count, comment, creator, create_time, update_time
         FROM wordlist
         WHERE
             1 = 1
