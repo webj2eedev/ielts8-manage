@@ -58,7 +58,6 @@
             </if >
     </select>
 
-
     <select id="existWord" resultType="Boolean">
         SELECT count(word) FROM wordlist WHERE word = #{word}
     </select>
@@ -74,5 +73,11 @@
         order by
             time
     </select>
+
+    <insert id="createRef" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.WordlistRefDO">
+        INSERT INTO wordlist_ref
+        (label, comment, creator, create_time)
+        VALUES(#{label}, #{comment}, #{creator}, NOW());
+    </insert>
 </mapper>
 

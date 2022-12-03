@@ -2,6 +2,7 @@ package com.webj2eedev.ieltsnote.dao;
 
 import com.webj2eedev.ieltsnote.entity.WordCntNewlyAddedDO;
 import com.webj2eedev.ieltsnote.entity.WordDO;
+import com.webj2eedev.ieltsnote.entity.WordlistRefDO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -20,4 +21,5 @@ public interface WordlistDao {
 
     List<WordCntNewlyAddedDO> queryNewlyAddedWordCntSummary();
 
+    void createRef(WordlistRefDO pdo);
 }

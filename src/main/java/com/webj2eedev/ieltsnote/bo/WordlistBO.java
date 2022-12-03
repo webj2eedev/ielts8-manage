@@ -3,6 +3,7 @@ package com.webj2eedev.ieltsnote.bo;
 import com.webj2eedev.ieltsnote.dao.WordlistDao;
 import com.webj2eedev.ieltsnote.entity.WordCntNewlyAddedDO;
 import com.webj2eedev.ieltsnote.entity.WordDO;
+import com.webj2eedev.ieltsnote.entity.WordlistRefDO;
 import com.webj2eedev.ieltsnote.utils.WordUtil;
 import com.webj2eedev.ieltsnote.utils.minio.MINIOClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,5 +99,11 @@ public class WordlistBO {
     public List<WordCntNewlyAddedDO> queryNewlyAddedWordCntSummary() {
         List<WordCntNewlyAddedDO> rDos = dao.queryNewlyAddedWordCntSummary();
         return rDos;
+    }
+
+    public int createRef(String label, int creator) {
+        WordlistRefDO pdo = WordlistRefDO.builder().label(label).creator(creator).build();
+        dao.createRef(pdo);
+        return pdo.getUid();
     }
 }
