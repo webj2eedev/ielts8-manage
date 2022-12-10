@@ -3,8 +3,8 @@
 <mapper namespace="com.webj2eedev.ieltsnote.dao.WordlistDao">
     <insert id="addWord" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.WordDO">
         INSERT INTO wordlist
-        (word, phonetic_british, phonetic_american, speech_british_ossid, speech_american_ossid, mind_spelling, mind_pronunciation, mind_stress_position, comment, creator, create_time)
-        VALUES(#{word}, #{phoneticBritish}, #{phoneticAmerican}, #{speechBritishOssid}, #{speechAmericanOssid}, 0, 0, 0, #{comment}, #{creator}, NOW());
+        (word, phonetic_british, phonetic_american, speech_british_ossid, speech_american_ossid, mind_spelling, mind_pronunciation, mind_stress_position, mind_word_classes, stars, comment, creator, create_time)
+        VALUES(#{word}, #{phoneticBritish}, #{phoneticAmerican}, #{speechBritishOssid}, #{speechAmericanOssid}, 0, 0, 0, 0, 0, #{comment}, #{creator}, NOW());
     </insert>
 
     <delete id="deleteWord">
@@ -31,6 +31,12 @@
             <if test="mindStressPosition!=null">
                 , mind_stress_position = #{mindStressPosition}
             </if >
+            <if test="mindWordClasses!=null">
+                , mind_word_classes = #{mindWordClasses}
+            </if >
+            <if test="stars!=null">
+                , stars = #{stars}
+            </if >
             <if test="addCount!=null">
                 , add_count = #{addCount}
             </if >
@@ -42,20 +48,57 @@
     </update>
 
     <select id="queryWord" resultType="com.webj2eedev.ieltsnote.entity.WordDO">
-        SELECT uid, word, phonetic_british, phonetic_american, speech_british_ossid, speech_american_ossid, mind_spelling, mind_pronunciation, mind_stress_position, add_count, comment, creator, create_time, update_time
-        FROM wordlist
+        select
+            uid,
+            word,
+            phonetic_british,
+            phonetic_american,
+            speech_british_ossid,
+            speech_american_ossid,
+            mind_spelling,
+            mind_pronunciation,
+            mind_stress_position,
+            mind_word_classes,
+            stars,
+            add_count,
+            comment,
+            creator,
+            create_time,
+            update_time
+        from wordlist
         WHERE
             word = #{word}
     </select>
 
     <select id="queryWords" resultType="com.webj2eedev.ieltsnote.entity.WordDO">
-        SELECT uid, word, phonetic_british, phonetic_american, speech_british_ossid, speech_american_ossid, mind_spelling, mind_pronunciation, mind_stress_position, add_count, comment, creator, create_time, update_time
-        FROM wordlist
+        select
+            uid,
+            word,
+            phonetic_british,
+            phonetic_american,
+            speech_british_ossid,
+            speech_american_ossid,
+            mind_spelling,
+            mind_pronunciation,
+            mind_stress_position,
+            mind_word_classes,
+            stars,
+            add_count,
+            comment,
+            creator,
+            create_time,
+            update_time
+        from wordlist
         WHERE
             1 = 1
             <if test="condition!=null and condition!=''">
                 word like '%#{condition}%'
             </if >
+        ORDER by
+        case
+            when update_time is null then create_time
+            else update_time
+        end desc
     </select>
 
     <select id="existWord" resultType="Boolean">
@@ -102,6 +145,8 @@
             w.mind_spelling,
             w.mind_pronunciation,
             w.mind_stress_position,
+            w.mind_word_classes,
+            w.stars,
             w.add_count,
             w.comment,
             w.creator,
@@ -116,6 +161,11 @@
             <if test="condition!=null and condition!=''">
                 and w.word like '%#{condition}%'
             </if >
+        ORDER by
+        case
+            when w.update_time is null then w.create_time
+            else w.update_time
+        end desc
     </select>
 
 </mapper>

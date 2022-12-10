@@ -19,6 +19,8 @@ public class WordDO implements Serializable {
     private Boolean mindSpelling;
     private Boolean mindPronunciation;
     private Boolean mindStressPosition;
+    private Boolean mindWordClasses;
+    private Integer stars;
     private Integer addCount;
     private String comment;
     private Integer creator;
