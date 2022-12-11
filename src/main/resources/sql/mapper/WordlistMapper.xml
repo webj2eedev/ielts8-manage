@@ -2,18 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.webj2eedev.ieltsnote.dao.WordlistDao">
     <insert id="addWord" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.WordDO">
-        INSERT INTO wordlist
+        INSERT INTO word
         (word, phonetic_british, phonetic_american, speech_british_ossid, speech_american_ossid, mind_spelling, mind_pronunciation, mind_stress_position, mind_word_classes, stars, comment, creator, create_time)
         VALUES(#{word}, #{phoneticBritish}, #{phoneticAmerican}, #{speechBritishOssid}, #{speechAmericanOssid}, 0, 0, 0, 0, 0, #{comment}, #{creator}, NOW());
     </insert>
 
     <delete id="deleteWord">
-        delete FROM wordlist
+        delete FROM word
         WHERE uid = #{uid}
     </delete>
 
     <update id="updateWord" parameterType="com.webj2eedev.ieltsnote.entity.WordDO">
-        update wordlist
+        update word
         set
             update_time = NOW()
             <if test="word!=null and word!=''">
@@ -65,7 +65,7 @@
             creator,
             create_time,
             update_time
-        from wordlist
+        from word
         WHERE
             word = #{word}
     </select>
@@ -88,7 +88,7 @@
             creator,
             create_time,
             update_time
-        from wordlist
+        from word
         WHERE
             1 = 1
             <if test="condition!=null and condition!=''">
@@ -102,7 +102,7 @@
     </select>
 
     <select id="existWord" resultType="Boolean">
-        SELECT count(word) FROM wordlist WHERE word = #{word}
+        SELECT count(word) FROM word WHERE word = #{word}
     </select>
 
     <select id="queryNewlyAddedWordCntSummary" resultType="com.webj2eedev.ieltsnote.entity.WordCntNewlyAddedDO">
@@ -110,7 +110,7 @@
             count(1) `count`,
             DATE_FORMAT(create_time , '%Y-%m-%d') `time`
         from
-            wordlist w
+            word w
         group by
             time
         order by
@@ -118,20 +118,20 @@
     </select>
 
     <insert id="createRef" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.WordlistRefDO">
-        INSERT INTO wordlist_ref
+        INSERT INTO wordlist_group
         (label, comment, creator, create_time)
         VALUES(#{label}, #{comment}, #{creator}, NOW());
     </insert>
 
     <insert id="addRefWord" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.WordlistRefWordDO">
-        INSERT INTO wordlist_ref_detail
-        (ref_id, word_id, comment, creator, create_time)
+        INSERT INTO wordlist_group_dtl
+        (group_id, word_id, comment, creator, create_time)
         VALUES(#{refId}, #{wordId}, #{comment}, #{creator}, NOW());
     </insert>
 
     <delete id="deleteRefWord">
-        DELETE FROM wordlist_ref_detail
-        WHERE ref_id = #{refId} and word_id=#{wordId};
+        DELETE FROM wordlist_group_dtl
+        WHERE group_id = #{refId} and word_id=#{wordId};
     </delete>
 
     <select id="queryRefWords" resultType="com.webj2eedev.ieltsnote.entity.WordDO">
@@ -153,11 +153,11 @@
             w.create_time,
             w.update_time
         from
-            wordlist w ,
-            wordlist_ref_detail wrd
+            word w ,
+            wordlist_group_dtl wrd
         where
             w.uid = wrd.word_id
-            and wrd.ref_id = #{refId}
+            and wrd.group_id = #{refId}
             <if test="condition!=null and condition!=''">
                 and w.word like '%#{condition}%'
             </if >
