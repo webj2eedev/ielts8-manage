@@ -5,7 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.webj2eedev.ieltsnote.bo.WordlistBO;
 import com.webj2eedev.ieltsnote.common.web.WrapperResponse;
-import com.webj2eedev.ieltsnote.dto.*;
+import com.webj2eedev.ieltsnote.dto.word.*;
 import com.webj2eedev.ieltsnote.entity.WordNewlyAddedDO;
 import com.webj2eedev.ieltsnote.entity.WordDO;
 import com.webj2eedev.ieltsnote.utils.minio.MINIOClient;
@@ -31,14 +31,14 @@ public class WordController {
 
     @ResponseBody
     @RequestMapping(value = "/addWord", method = {RequestMethod.POST})
-    public WrapperResponse<Integer> addWord(@RequestBody WordAddDTO pdto) {
+    public WrapperResponse<Integer> addWord(@RequestBody AddWordDTO pdto) {
         int ret = bo.addWord(pdto.getWord().trim(), pdto.getCreator());
         return WrapperResponse.ok(ret);
     }
 
     @ResponseBody
     @RequestMapping(value = "/queryWords", method = {RequestMethod.POST})
-    public WrapperResponse<PageInfo> queryWords(@RequestBody WordQueryDTO pdto) {
+    public WrapperResponse<PageInfo> queryWords(@RequestBody QueryWordsDTO pdto) {
         Page<WordDO> objects = PageHelper.startPage(pdto.getPagenum(), pdto.getPagesize());
 
         bo.queryWords(pdto.getCondition());
@@ -49,7 +49,7 @@ public class WordController {
 
     @ResponseBody
     @RequestMapping(value = "/deleteWord", method = {RequestMethod.POST})
-    public WrapperResponse<Long> deleteWord(@RequestBody WordDeleteDTO pdto) {
+    public WrapperResponse<Long> deleteWord(@RequestBody DeleteWordDTO pdto) {
         Long ret = bo.deleteWord(pdto.getUid());
         return WrapperResponse.ok(ret);
     }
@@ -84,31 +84,31 @@ public class WordController {
 
     @ResponseBody
     @RequestMapping(value = "/addWordGroup", method = {RequestMethod.POST})
-    public WrapperResponse<Integer> addWordGroup(@RequestBody WordlistRefCreateDTO pdto) {
+    public WrapperResponse<Integer> addWordGroup(@RequestBody AddWordGroupDTO pdto) {
         int ret = bo.addWordGroup(pdto.getLabel().trim(), pdto.getCreator());
         return WrapperResponse.ok(ret);
     }
 
     @ResponseBody
     @RequestMapping(value = "/addWordInWordGroup", method = {RequestMethod.POST})
-    public WrapperResponse<Integer> addWordInWordGroup(@RequestBody WordlistRefWordAddDTO pdto) {
+    public WrapperResponse<Integer> addWordInWordGroup(@RequestBody AddWordInWordGroupDTO pdto) {
         Integer ret = bo.addWordInWordGroup(pdto.getGroupId(), pdto.getWord().trim(), pdto.getCreator());
         return WrapperResponse.ok(ret);
     }
 
     @ResponseBody
     @RequestMapping(value = "/deleteWordInGroup", method = {RequestMethod.POST})
-    public WrapperResponse<Long> deleteWordInGroup(@RequestBody WordlistRefWordDeleteDTO pdto) {
+    public WrapperResponse<Long> deleteWordInGroup(@RequestBody DeleteWordInWordGroupDTO pdto) {
         Long ret = bo.deleteWordInGroup(pdto.getRefId(), pdto.getWordId(), pdto.getCascade());
         return WrapperResponse.ok(ret);
     }
 
     @ResponseBody
     @RequestMapping(value = "/queryWordsInWordGroup", method = {RequestMethod.POST})
-    public WrapperResponse<PageInfo> queryWordsInWordGroup(@RequestBody RefWordsQueryDTO pdto) {
+    public WrapperResponse<PageInfo> queryWordsInWordGroup(@RequestBody QueryWordsInWordGroupDTO pdto) {
         Page<WordDO> objects = PageHelper.startPage(pdto.getPagenum(), pdto.getPagesize());
 
-        bo.queryWordsInWordGroup(pdto.getRefId(), pdto.getCondition());
+        bo.queryWordsInWordGroup(pdto.getGroupId(), pdto.getCondition());
 
         PageInfo<WordDO> pageInfo = new PageInfo<>(objects);
         return WrapperResponse.ok(pageInfo);

@@ -3,8 +3,8 @@
 <mapper namespace="com.webj2eedev.ieltsnote.dao.WordDao">
     <insert id="addWord" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.WordDO">
         INSERT INTO word
-        (word, phonetic_british, phonetic_american, speech_british_ossid, speech_american_ossid, mind_spelling, mind_pronunciation, mind_stress_position, mind_word_classes, stars, comment, creator, create_time)
-        VALUES(#{word}, #{phoneticBritish}, #{phoneticAmerican}, #{speechBritishOssid}, #{speechAmericanOssid}, 0, 0, 0, 0, 0, #{comment}, #{creator}, NOW());
+        (word, phonetic_british, phonetic_american, speech_british_ossid, speech_american_ossid, comment, creator, create_time)
+        VALUES(#{word}, #{phoneticBritish}, #{phoneticAmerican}, #{speechBritishOssid}, #{speechAmericanOssid}, #{comment}, #{creator}, NOW());
     </insert>
 
     <delete id="deleteWord">
@@ -34,6 +34,12 @@
             <if test="mindWordClasses!=null">
                 , mind_word_classes = #{mindWordClasses}
             </if >
+            <if test="mindMeaning!=null">
+                , mind_meaning = #{mindMeaning}
+            </if >
+            <if test="hasLink!=null">
+                , has_link = #{hasLink}
+            </if >
             <if test="stars!=null">
                 , stars = #{stars}
             </if >
@@ -59,6 +65,8 @@
             mind_pronunciation,
             mind_stress_position,
             mind_word_classes,
+            mind_meaning,
+            has_link,
             stars,
             add_count,
             comment,
@@ -82,6 +90,8 @@
             mind_pronunciation,
             mind_stress_position,
             mind_word_classes,
+            mind_meaning,
+            has_link,
             stars,
             add_count,
             comment,
@@ -146,6 +156,8 @@
             w.mind_pronunciation,
             w.mind_stress_position,
             w.mind_word_classes,
+            w.mind_meaning,
+            w.has_link,
             w.stars,
             w.add_count,
             w.comment,

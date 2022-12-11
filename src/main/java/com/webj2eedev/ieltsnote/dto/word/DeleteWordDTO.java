@@ -1,4 +1,4 @@
-package com.webj2eedev.ieltsnote.dto;
+package com.webj2eedev.ieltsnote.dto.word;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +11,6 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class WordDeleteDTO implements Serializable {
+public class DeleteWordDTO implements Serializable {
     private int uid;
 }

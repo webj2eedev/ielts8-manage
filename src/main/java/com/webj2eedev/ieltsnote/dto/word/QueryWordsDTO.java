@@ -1,4 +1,4 @@
-package com.webj2eedev.ieltsnote.dto;
+package com.webj2eedev.ieltsnote.dto.word;
 
 import lombok.Builder;
 import lombok.Data;
@@ -7,8 +7,7 @@ import java.io.Serializable;
 
 @Builder
 @Data
-public class RefWordsQueryDTO implements Serializable {
-    private Integer refId;
+public class QueryWordsDTO implements Serializable {
     private String condition;
 
     // pageable

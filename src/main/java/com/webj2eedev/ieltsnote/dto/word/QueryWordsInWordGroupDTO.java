@@ -1,4 +1,4 @@
-package com.webj2eedev.ieltsnote.dto;
+package com.webj2eedev.ieltsnote.dto.word;
 
 import lombok.Builder;
 import lombok.Data;
@@ -7,7 +7,8 @@ import java.io.Serializable;
 
 @Builder
 @Data
-public class WordQueryDTO implements Serializable {
+public class QueryWordsInWordGroupDTO implements Serializable {
+    private Integer groupId;
     private String condition;
 
     // pageable
