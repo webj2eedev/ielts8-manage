@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Builder
 @Data
-public class WordCntNewlyAddedDO {
+public class WordNewlyAddedDO {
     private Long count;
     private String time;
 }

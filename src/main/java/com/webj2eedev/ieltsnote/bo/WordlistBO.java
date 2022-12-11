@@ -1,10 +1,10 @@
 package com.webj2eedev.ieltsnote.bo;
 
-import com.webj2eedev.ieltsnote.dao.WordlistDao;
-import com.webj2eedev.ieltsnote.entity.WordCntNewlyAddedDO;
+import com.webj2eedev.ieltsnote.dao.WordDao;
+import com.webj2eedev.ieltsnote.entity.WordNewlyAddedDO;
 import com.webj2eedev.ieltsnote.entity.WordDO;
-import com.webj2eedev.ieltsnote.entity.WordlistRefDO;
-import com.webj2eedev.ieltsnote.entity.WordlistRefWordDO;
+import com.webj2eedev.ieltsnote.entity.WordGroupDO;
+import com.webj2eedev.ieltsnote.entity.WordGroupDtlDO;
 import com.webj2eedev.ieltsnote.utils.WordUtil;
 import com.webj2eedev.ieltsnote.utils.minio.MINIOClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +18,12 @@ import java.util.List;
 @Service
 public class WordlistBO {
     @Resource
-    private WordlistDao dao;
+    private WordDao dao;
 
     @Autowired
     private MINIOClient minio;
 
-    private final String WORDLIST_BUCKET_NAME = "wordlist-bucket";
+    private final String WORD_BUCKET_NAME = "word";
 
     public int addWord(String word, int creator) {
         WordDO pdo = WordDO.builder().word(word).creator(creator).build();
@@ -49,7 +49,7 @@ public class WordlistBO {
                 try {
                     String ossid = word + "_" + "british.mp3";
                     byte[] audio = WordUtil.downloadWordAudio(word, "1");
-                    minio.putObject(WORDLIST_BUCKET_NAME, ossid, new ByteArrayInputStream(audio), Long.valueOf(Integer.toString(audio.length)), "audio/mpeg");
+                    minio.putObject(WORD_BUCKET_NAME, ossid, new ByteArrayInputStream(audio), Long.valueOf(Integer.toString(audio.length)), "audio/mpeg");
                     pdo.setSpeechBritishOssid(ossid);
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -60,7 +60,7 @@ public class WordlistBO {
                 try {
                     String ossid = word + "_" + "american.mp3";
                     byte[] audio = WordUtil.downloadWordAudio(word, "2");
-                    minio.putObject(WORDLIST_BUCKET_NAME, ossid, new ByteArrayInputStream(audio), Long.valueOf(Integer.toString(audio.length)), "audio/mpeg");
+                    minio.putObject(WORD_BUCKET_NAME, ossid, new ByteArrayInputStream(audio), Long.valueOf(Integer.toString(audio.length)), "audio/mpeg");
                     pdo.setSpeechAmericanOssid(ossid);
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -97,18 +97,18 @@ public class WordlistBO {
         return dao.existWord(word);
     }
 
-    public List<WordCntNewlyAddedDO> queryNewlyAddedWordCntSummary() {
-        List<WordCntNewlyAddedDO> rDos = dao.queryNewlyAddedWordCntSummary();
+    public List<WordNewlyAddedDO> summarizeWordNewlyAdded() {
+        List<WordNewlyAddedDO> rDos = dao.summarizeWordNewlyAdded();
         return rDos;
     }
 
-    public int createRef(String label, int creator) {
-        WordlistRefDO pdo = WordlistRefDO.builder().label(label).creator(creator).build();
-        dao.createRef(pdo);
+    public int addWordGroup(String label, int creator) {
+        WordGroupDO pdo = WordGroupDO.builder().label(label).creator(creator).build();
+        dao.addWordGroup(pdo);
         return pdo.getUid();
     }
 
-    public int addRefWord(int refId, String word, int creator) {
+    public int addWordInWordGroup(int groupId, String word, int creator) {
         int wordId;
         WordDO exist = this.queryWord(word);
         if (exist != null) {
@@ -116,22 +116,22 @@ public class WordlistBO {
         } else {
             wordId = this.addWord(word, creator);
         }
-        WordlistRefWordDO pdo = WordlistRefWordDO.builder().refId(refId).wordId(wordId).creator(creator).build();
-        dao.addRefWord(pdo);
+        WordGroupDtlDO pdo = WordGroupDtlDO.builder().groupId(groupId).wordId(wordId).creator(creator).build();
+        dao.addWordInWordGroup(pdo);
         return pdo.getUid();
     }
 
-    public Long deleteRefWord(int refId, int wordId, boolean cascade) {
+    public Long deleteWordInGroup(int groupId, int wordId, boolean cascade) {
         if(cascade){
-            dao.deleteRefWord(refId, wordId);
+            dao.deleteWordInGroup(groupId, wordId);
             return dao.deleteWord(wordId);
         }else{
-            return dao.deleteRefWord(refId, wordId);
+            return dao.deleteWordInGroup(groupId, wordId);
         }
     }
 
-    public List<WordDO> queryRefWords(int refId, String condition) {
-        return dao.queryRefWords(refId, condition);
+    public List<WordDO> queryWordsInWordGroup(int refId, String condition) {
+        return dao.queryWordsInWordGroup(refId, condition);
     }
 
 }

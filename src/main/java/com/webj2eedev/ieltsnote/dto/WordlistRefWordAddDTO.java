@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Builder
 @Data
 public class WordlistRefWordAddDTO implements Serializable {
-    private Integer refId;
+    private Integer groupId;
     private String word;
     private Integer creator;
 }

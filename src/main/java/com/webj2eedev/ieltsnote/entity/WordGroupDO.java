@@ -8,10 +8,9 @@ import java.sql.Timestamp;
 
 @Builder
 @Data
-public class WordlistRefWordDO implements Serializable {
+public class WordGroupDO implements Serializable {
     private Integer uid;
-    private Integer refId;
-    private Integer wordId;
+    private String label;
     private String comment;
     private Integer creator;
     private Timestamp createTime;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.webj2eedev.ieltsnote.dao.WordlistDao">
+<mapper namespace="com.webj2eedev.ieltsnote.dao.WordDao">
     <insert id="addWord" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.WordDO">
         INSERT INTO word
         (word, phonetic_british, phonetic_american, speech_british_ossid, speech_american_ossid, mind_spelling, mind_pronunciation, mind_stress_position, mind_word_classes, stars, comment, creator, create_time)
@@ -105,7 +105,7 @@
         SELECT count(word) FROM word WHERE word = #{word}
     </select>
 
-    <select id="queryNewlyAddedWordCntSummary" resultType="com.webj2eedev.ieltsnote.entity.WordCntNewlyAddedDO">
+    <select id="summarizeWordNewlyAdded" resultType="com.webj2eedev.ieltsnote.entity.WordNewlyAddedDO">
         select
             count(1) `count`,
             DATE_FORMAT(create_time , '%Y-%m-%d') `time`
@@ -117,24 +117,24 @@
             time
     </select>
 
-    <insert id="createRef" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.WordlistRefDO">
-        INSERT INTO wordlist_group
+    <insert id="addWordGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.WordGroupDO">
+        INSERT INTO word_group
         (label, comment, creator, create_time)
         VALUES(#{label}, #{comment}, #{creator}, NOW());
     </insert>
 
-    <insert id="addRefWord" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.WordlistRefWordDO">
-        INSERT INTO wordlist_group_dtl
+    <insert id="addWordInWordGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.WordGroupDtlDO">
+        INSERT INTO word_group_dtl
         (group_id, word_id, comment, creator, create_time)
-        VALUES(#{refId}, #{wordId}, #{comment}, #{creator}, NOW());
+        VALUES(#{groupId}, #{wordId}, #{comment}, #{creator}, NOW());
     </insert>
 
-    <delete id="deleteRefWord">
-        DELETE FROM wordlist_group_dtl
-        WHERE group_id = #{refId} and word_id=#{wordId};
+    <delete id="deleteWordGroup">
+        DELETE FROM word_group_dtl
+        WHERE group_id = #{groupId} and word_id=#{wordId};
     </delete>
 
-    <select id="queryRefWords" resultType="com.webj2eedev.ieltsnote.entity.WordDO">
+    <select id="queryWordsInWordGroup" resultType="com.webj2eedev.ieltsnote.entity.WordDO">
         select
             w.uid,
             w.word,
@@ -154,10 +154,10 @@
             w.update_time
         from
             word w ,
-            wordlist_group_dtl wrd
+            word_group_dtl wrd
         where
             w.uid = wrd.word_id
-            and wrd.group_id = #{refId}
+            and wrd.group_id = #{groupId}
             <if test="condition!=null and condition!=''">
                 and w.word like '%#{condition}%'
             </if >
