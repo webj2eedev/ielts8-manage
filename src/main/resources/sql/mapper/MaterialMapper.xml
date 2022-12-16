@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webj2eedev.ieltsnote.dao.MaterialDao">
+    <insert id="addMaterial" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid" parameterType="com.webj2eedev.ieltsnote.entity.material.MaterialDO">
+        INSERT INTO material
+        (content, comment, creator, create_time)
+        VALUES(#{content}, #{comment}, #{creator}, NOW());
+    </insert>
+
+    <delete id="deleteMaterial">
+        DELETE FROM material
+        WHERE uid=#{uid};
+    </delete>
+
+    <update id="updateMaterial" parameterType="com.webj2eedev.ieltsnote.entity.material.MaterialDO">
+        update material
+        set
+            update_time = NOW()
+        <if test="content!=null and content!=''">
+            , content = #{content}
+        </if >
+        <if test="comment!=null and comment!=''">
+            , comment = #{comment}
+        </if >
+        WHERE
+            uid=#{uid}
+    </update>
+
+    <select id="queryMaterials" resultType="com.webj2eedev.ieltsnote.entity.material.MaterialDO">
+        SELECT uid, content, comment, creator, create_time, update_time
+        FROM material
+        WHERE
+            1 = 1
+            <if test="condition!=null and condition!=''">
+                and word like '%#{condition}%'
+            </if >
+    </select>
+
+    <select id="queryMaterialAttachments" resultType="com.webj2eedev.ieltsnote.entity.material.MaterialAttachmentDO">
+        SELECT uid, material_id, content, comment, creator, create_time, update_time
+        FROM material_attachment
+        WHERE
+            material_id = #{material_id}
+    </select>
+
+
+    <insert id="addMaterialAttachment" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid" parameterType="com.webj2eedev.ieltsnote.entity.material.MaterialAttachmentDO">
+        INSERT INTO material_attachment
+        (material_id, attachment, comment, creator, create_time)
+        VALUES(#{material_id}, #{attachment}, #{comment}, #{creator}, NOW());
+    </insert>
+
+
+    <update id="updateMaterialAttachment" parameterType="com.webj2eedev.ieltsnote.entity.material.MaterialAttachmentDO">
+        update material_attachment
+        set
+            update_time = NOW()
+        <if test="attachment!=null and attachment!=''">
+            , attachment = #{attachment}
+        </if >
+        <if test="comment!=null and comment!=''">
+            , comment = #{comment}
+        </if >
+        WHERE
+            uid = #{uid}
+    </update>
+
+    <insert id="log" parameterType="com.webj2eedev.ieltsnote.entity.material.MaterialLogDO">
+        INSERT INTO material_log
+        (material_id, operation, creator, log_time)
+        VALUES(#{materialId}, #{operation}, #{creator}, NOW());
+    </insert>
+
+    <select id="summarizeMaterialNewlyAdded" resultType="com.webj2eedev.ieltsnote.entity.material.MaterialNewlyAddedDO">
+        select
+            count(distinct material_id) count,
+            DATE_FORMAT(log_time, '%Y-%m-%d') time
+        from
+            material_log sl
+        group by
+            time
+    </select>
+</mapper>
+
