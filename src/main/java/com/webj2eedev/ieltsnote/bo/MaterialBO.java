@@ -30,6 +30,10 @@ public class MaterialBO {
         return ret;
     }
 
+    public MaterialDO queryMaterial(int uid) {
+        return dao.queryMaterial(uid);
+    }
+
     public List<MaterialDO> queryMaterials(String condition) {
         return dao.queryMaterials(condition);
     }

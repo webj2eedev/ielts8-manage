@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import com.webj2eedev.ieltsnote.bo.MaterialBO;
 import com.webj2eedev.ieltsnote.common.web.WrapperResponse;
 import com.webj2eedev.ieltsnote.dto.material.DeleteMaterialDTO;
+import com.webj2eedev.ieltsnote.dto.material.QueryMaterialDTO;
 import com.webj2eedev.ieltsnote.dto.material.QueryMaterialsDTO;
 import com.webj2eedev.ieltsnote.entity.material.MaterialAttachmentDO;
 import com.webj2eedev.ieltsnote.entity.material.MaterialDO;
@@ -53,6 +54,15 @@ public class MaterialController {
         Long ret = bo.updateMaterial(pdo);
         return WrapperResponse.ok(ret);
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/queryMaterial", method = {RequestMethod.POST})
+    public WrapperResponse<MaterialDO> queryMaterial(@RequestBody QueryMaterialDTO pdto) {
+        MaterialDO ret = bo.queryMaterial(pdto.getUid());
+
+        return WrapperResponse.ok(ret);
+    }
+
 
     @ResponseBody
     @RequestMapping(value = "/queryMaterials", method = {RequestMethod.POST})

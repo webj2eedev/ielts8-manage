@@ -14,8 +14,9 @@ public interface MaterialDao {
 
     Long updateMaterial(MaterialDO pDo);
 
-    List<MaterialDO> queryMaterials(@Param("condition") String condition);
+    MaterialDO queryMaterial(@Param("uid") int uid);
 
+    List<MaterialDO> queryMaterials(@Param("condition") String condition);
 
     List<MaterialAttachmentDO> queryMaterialAttachments(MaterialDO pDo);
 

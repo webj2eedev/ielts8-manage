@@ -26,13 +26,20 @@
             uid=#{uid}
     </update>
 
+    <select id="queryMaterial" resultType="com.webj2eedev.ieltsnote.entity.material.MaterialDO">
+        SELECT uid, content, comment, creator, create_time, update_time
+        FROM material
+        WHERE
+            uid = #{uid}
+    </select>
+
     <select id="queryMaterials" resultType="com.webj2eedev.ieltsnote.entity.material.MaterialDO">
         SELECT uid, content, comment, creator, create_time, update_time
         FROM material
         WHERE
             1 = 1
             <if test="condition!=null and condition!=''">
-                and word like '%#{condition}%'
+                and content like CONCAT('%',#{condition},'%')
             </if >
     </select>
 
