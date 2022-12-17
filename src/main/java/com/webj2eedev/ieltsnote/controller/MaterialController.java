@@ -83,7 +83,7 @@ public class MaterialController {
             try {
                 fileName = file.getOriginalFilename();
                 fileContentType = file.getContentType();
-                fileOssid = "FILE_[" + fileName + "]_[" + fileContentType + "]_" + UUID.randomUUID();
+                fileOssid = "FILE_" + UUID.randomUUID();
                 minio.putObject(MATERIAL_BUCKET_NAME, fileOssid, file.getInputStream(), file.getSize(), file.getContentType());
             } catch (IOException e) {
                 throw new RuntimeException(e);
