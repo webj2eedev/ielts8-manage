@@ -3,7 +3,7 @@ package com.webj2eedev.ieltsnote.controller;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.webj2eedev.ieltsnote.bo.WordlistBO;
+import com.webj2eedev.ieltsnote.bo.WordBO;
 import com.webj2eedev.ieltsnote.common.web.WrapperResponse;
 import com.webj2eedev.ieltsnote.dto.word.*;
 import com.webj2eedev.ieltsnote.entity.WordNewlyAddedDO;
@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/word")
 public class WordController {
     @Autowired
-    WordlistBO bo;
+    WordBO bo;
 
     @Autowired
     private MINIOClient minio;
@@ -31,8 +31,19 @@ public class WordController {
 
     @ResponseBody
     @RequestMapping(value = "/addWord", method = {RequestMethod.POST})
-    public WrapperResponse<Integer> addWord(@RequestBody AddWordDTO pdto) {
-        int ret = bo.addWord(pdto.getWord().trim(), pdto.getCreator());
+    public WrapperResponse<WordDO> addWord(@RequestBody AddWordDTO pdto) {
+        String word = pdto.getWord().trim();
+        bo.addWord(word, pdto.getCreator());
+
+        WordDO ret = bo.queryWord(word);
+
+        return WrapperResponse.ok(ret);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/queryWord", method = {RequestMethod.POST})
+    public WrapperResponse<WordDO> queryWord(@RequestBody QueryWordDTO pdto) {
+        WordDO ret = bo.queryWord(pdto.getWord());
         return WrapperResponse.ok(ret);
     }
 

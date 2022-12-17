@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Service
-public class WordlistBO {
+public class WordBO {
     @Resource
     private WordDao dao;
 
