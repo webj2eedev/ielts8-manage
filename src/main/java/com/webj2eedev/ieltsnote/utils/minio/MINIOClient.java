@@ -34,7 +34,17 @@ public class MINIOClient {
                             .build());
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }    }
+        }
+    }
+
+    public void removeObject(String bucketName, String objectName) {
+        MinioClient minioClient = MinioClient.builder().endpoint(url).credentials(accessKey, secretKey).build();
+        try {
+            minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(objectName).build());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public String getObjectPersistUrl(String bucketName, String objectname) {
         return getPersistUrl(bucketName, objectname);

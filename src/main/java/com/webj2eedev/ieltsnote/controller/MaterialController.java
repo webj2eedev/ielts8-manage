@@ -6,10 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.webj2eedev.ieltsnote.bo.MaterialBO;
 import com.webj2eedev.ieltsnote.common.web.WrapperResponse;
-import com.webj2eedev.ieltsnote.dto.material.DeleteMaterialDTO;
-import com.webj2eedev.ieltsnote.dto.material.QueryMaterialAttachmentsDTO;
-import com.webj2eedev.ieltsnote.dto.material.QueryMaterialDTO;
-import com.webj2eedev.ieltsnote.dto.material.QueryMaterialsDTO;
+import com.webj2eedev.ieltsnote.dto.material.*;
 import com.webj2eedev.ieltsnote.entity.material.*;
 import com.webj2eedev.ieltsnote.utils.minio.MINIOClient;
 import com.webj2eedev.ieltsnote.utils.uuid.UUID;
@@ -23,12 +20,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/material")
 public class MaterialController {
+    private final String MATERIAL_BUCKET_NAME = "material";
     @Autowired
     MaterialBO bo;
     @Autowired
-    MINIOClient minioClient;
-
-    private final String MATERIAL_BUCKET_NAME = "material";
+    MINIOClient minio;
 
     @ResponseBody
     @RequestMapping(value = "/addMaterial", method = {RequestMethod.POST})
@@ -87,27 +83,27 @@ public class MaterialController {
             try {
                 fileName = file.getOriginalFilename();
                 fileContentType = file.getContentType();
-                fileOssid = "FILE_["+fileName+"]_["+fileContentType+"]_"+UUID.randomUUID();
-                minioClient.putObject(MATERIAL_BUCKET_NAME, fileOssid, file.getInputStream(), file.getSize(), file.getContentType());
+                fileOssid = "FILE_[" + fileName + "]_[" + fileContentType + "]_" + UUID.randomUUID();
+                minio.putObject(MATERIAL_BUCKET_NAME, fileOssid, file.getInputStream(), file.getSize(), file.getContentType());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        JSONObject c =  new JSONObject();
-        if(MaterialAttachmentType.EXTERNAL_URL.toString().equals(type)){
+        JSONObject c = new JSONObject();
+        if (MaterialAttachmentType.EXTERNAL_URL.toString().equals(type)) {
             c.put("type", MaterialAttachmentType.EXTERNAL_URL);
             c.put("externalUrl", content);
-        }else if(MaterialAttachmentType.FILE.toString().equals(type)){
+        } else if (MaterialAttachmentType.FILE.toString().equals(type)) {
             c.put("type", MaterialAttachmentType.FILE);
             c.put("fileName", fileName);
             c.put("fileContentType", fileContentType);
             c.put("fileOssid", fileOssid);
-        }else if(MaterialAttachmentType.SHARING_EMBED.toString().equals(type)){
+        } else if (MaterialAttachmentType.SHARING_EMBED.toString().equals(type)) {
             c.put("type", MaterialAttachmentType.SHARING_EMBED);
             c.put("code", content);
-        }else{
-            throw new RuntimeException("type["+type+"]识别不了.");
+        } else {
+            throw new RuntimeException("type[" + type + "]识别不了.");
         }
 
         // add mp3
@@ -120,6 +116,20 @@ public class MaterialController {
         int ret = bo.addMaterialAttachment(pdo);
         return WrapperResponse.ok(ret);
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/deleteMaterialAttachment", method = {RequestMethod.POST})
+    public WrapperResponse<Integer> deleteMaterialAttachment(@RequestBody DeleteMaterialAttachmentDTO pdto) {
+
+        JSONObject attachment = JSONObject.parseObject(bo.queryMaterialAttachment(pdto.getUid()).getAttachment());
+        if (MaterialAttachmentType.FILE.toString().equals(attachment.getString("type"))) {
+            minio.removeObject(MATERIAL_BUCKET_NAME, attachment.getString("fileOssid"));
+        }
+
+        int id = bo.deleteMaterialAttachment(pdto.getUid());
+        return WrapperResponse.ok(id);
+    }
+
 
     @ResponseBody
     @RequestMapping(value = "/updateMaterialAttachment", method = {RequestMethod.POST})
@@ -155,12 +165,12 @@ public class MaterialController {
         String imageId = UUID.randomUUID().toString();
 
         try {
-            minioClient.putObject(MATERIAL_BUCKET_NAME, imageId, image.getInputStream(), image.getSize(), image.getContentType());
+            minio.putObject(MATERIAL_BUCKET_NAME, imageId, image.getInputStream(), image.getSize(), image.getContentType());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        String url = minioClient.getObjectPersistUrl(MATERIAL_BUCKET_NAME, imageId);
+        String url = minio.getObjectPersistUrl(MATERIAL_BUCKET_NAME, imageId);
 
         return WrapperResponse.ok(url);
     }

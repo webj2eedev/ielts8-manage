@@ -44,11 +44,18 @@ public class MaterialBO {
         return pdo.getUid();
     }
 
+    public int deleteMaterialAttachment(int uid) {
+        return dao.deleteMaterialAttachment(uid);
+    }
+
+
     public Long updateMaterialAttachment(MaterialAttachmentDO pdo) {
         Long ret = dao.updateMaterialAttachment(pdo);
         return ret;
     }
-
+    public MaterialAttachmentDO queryMaterialAttachment(int uid) {
+        return dao.queryMaterialAttachment(uid);
+    }
     public List<MaterialAttachmentDO> queryMaterialAttachments(int materialId) {
         return dao.queryMaterialAttachments(materialId);
     }

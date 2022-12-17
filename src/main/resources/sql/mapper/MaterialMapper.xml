@@ -43,6 +43,13 @@
             </if >
     </select>
 
+    <select id="queryMaterialAttachment" resultType="com.webj2eedev.ieltsnote.entity.material.MaterialAttachmentDO">
+        SELECT uid, material_id, attachment, comment, creator, create_time, update_time
+        FROM material_attachment
+        WHERE
+            uid = #{uid}
+    </select>
+
     <select id="queryMaterialAttachments" resultType="com.webj2eedev.ieltsnote.entity.material.MaterialAttachmentDO">
         SELECT uid, material_id, attachment, comment, creator, create_time, update_time
         FROM material_attachment
@@ -71,6 +78,11 @@
         WHERE
             uid = #{uid}
     </update>
+
+    <delete id="deleteMaterialAttachment">
+        DELETE FROM material_attachment
+        WHERE uid=#{uid};
+    </delete>
 
     <insert id="log" parameterType="com.webj2eedev.ieltsnote.entity.material.MaterialLogDO">
         INSERT INTO material_log
