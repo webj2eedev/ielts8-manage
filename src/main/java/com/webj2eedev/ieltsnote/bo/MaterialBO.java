@@ -49,6 +49,11 @@ public class MaterialBO {
         return ret;
     }
 
+    public List<MaterialAttachmentDO> queryMaterialAttachments(int materialId) {
+        return dao.queryMaterialAttachments(materialId);
+    }
+
+
     public Long log(MaterialLogDO pdo) {
         Long ret = dao.log(pdo);
         return ret;

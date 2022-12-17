@@ -44,17 +44,17 @@
     </select>
 
     <select id="queryMaterialAttachments" resultType="com.webj2eedev.ieltsnote.entity.material.MaterialAttachmentDO">
-        SELECT uid, material_id, content, comment, creator, create_time, update_time
+        SELECT uid, material_id, attachment, comment, creator, create_time, update_time
         FROM material_attachment
         WHERE
-            material_id = #{material_id}
+            material_id = #{materialId}
     </select>
 
 
     <insert id="addMaterialAttachment" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid" parameterType="com.webj2eedev.ieltsnote.entity.material.MaterialAttachmentDO">
         INSERT INTO material_attachment
         (material_id, attachment, comment, creator, create_time)
-        VALUES(#{material_id}, #{attachment}, #{comment}, #{creator}, NOW());
+        VALUES(#{materialId}, #{attachment}, #{comment}, #{creator}, NOW());
     </insert>
 
 

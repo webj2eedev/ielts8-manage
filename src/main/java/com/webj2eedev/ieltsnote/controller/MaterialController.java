@@ -7,12 +7,10 @@ import com.github.pagehelper.PageInfo;
 import com.webj2eedev.ieltsnote.bo.MaterialBO;
 import com.webj2eedev.ieltsnote.common.web.WrapperResponse;
 import com.webj2eedev.ieltsnote.dto.material.DeleteMaterialDTO;
+import com.webj2eedev.ieltsnote.dto.material.QueryMaterialAttachmentsDTO;
 import com.webj2eedev.ieltsnote.dto.material.QueryMaterialDTO;
 import com.webj2eedev.ieltsnote.dto.material.QueryMaterialsDTO;
-import com.webj2eedev.ieltsnote.entity.material.MaterialAttachmentDO;
-import com.webj2eedev.ieltsnote.entity.material.MaterialDO;
-import com.webj2eedev.ieltsnote.entity.material.MaterialLogDO;
-import com.webj2eedev.ieltsnote.entity.material.MaterialNewlyAddedDO;
+import com.webj2eedev.ieltsnote.entity.material.*;
 import com.webj2eedev.ieltsnote.utils.minio.MINIOClient;
 import com.webj2eedev.ieltsnote.utils.uuid.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -79,6 +75,7 @@ public class MaterialController {
     @RequestMapping(value = "/addMaterialAttachment", method = {RequestMethod.POST})
     public WrapperResponse<Integer> addMaterialAttachment(
             @RequestParam("materialId") String materialId,
+            @RequestParam("type") String type,
             @RequestParam("content") String content,
             @RequestParam(value = "file", required = false) MultipartFile file,
             @RequestParam(value = "comment", required = false) String comment,
@@ -88,30 +85,29 @@ public class MaterialController {
         String fileName = null;
         if (file != null) {
             try {
-                fileContentType = file.getContentType();
                 fileName = file.getOriginalFilename();
-
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss:SSS");
-                String now = sdf.format(new Date());
-                fileOssid = "diymaterialfile[" + creator + "][" + now + "]";
+                fileContentType = file.getContentType();
+                fileOssid = "FILE_["+fileName+"]_["+fileContentType+"]_"+UUID.randomUUID();
                 minioClient.putObject(MATERIAL_BUCKET_NAME, fileOssid, file.getInputStream(), file.getSize(), file.getContentType());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        String type = "1";
-
         JSONObject c =  new JSONObject();
-        c.put("type", type);
-        if("1".equalsIgnoreCase(type)){
-            c.put("url", content);
-        }else if("2".equalsIgnoreCase(type)){
+        if(MaterialAttachmentType.EXTERNAL_URL.toString().equals(type)){
+            c.put("type", MaterialAttachmentType.EXTERNAL_URL);
+            c.put("externalUrl", content);
+        }else if(MaterialAttachmentType.FILE.toString().equals(type)){
+            c.put("type", MaterialAttachmentType.FILE);
             c.put("fileName", fileName);
             c.put("fileContentType", fileContentType);
             c.put("fileOssid", fileOssid);
-        }else if("3".equalsIgnoreCase(type)){
-            c.put("embeddedCode", content);
+        }else if(MaterialAttachmentType.SHARING_EMBED.toString().equals(type)){
+            c.put("type", MaterialAttachmentType.SHARING_EMBED);
+            c.put("code", content);
+        }else{
+            throw new RuntimeException("type["+type+"]识别不了.");
         }
 
         // add mp3
@@ -129,6 +125,13 @@ public class MaterialController {
     @RequestMapping(value = "/updateMaterialAttachment", method = {RequestMethod.POST})
     public WrapperResponse<Long> updateMaterialAttachment(@RequestBody MaterialAttachmentDO pdo) {
         Long ret = bo.updateMaterialAttachment(pdo);
+        return WrapperResponse.ok(ret);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/queryMaterialAttachments", method = {RequestMethod.POST})
+    public WrapperResponse<List<MaterialAttachmentDO>> queryMaterialAttachments(@RequestBody QueryMaterialAttachmentsDTO pdto) {
+        List<MaterialAttachmentDO> ret = bo.queryMaterialAttachments(pdto.getMaterialId());
         return WrapperResponse.ok(ret);
     }
 
