@@ -117,14 +117,20 @@
 
     <select id="summarizeWordNewlyAdded" resultType="com.webj2eedev.ieltsnote.entity.WordNewlyAddedDO">
         select
-            count(1) `count`,
-            DATE_FORMAT(create_time , '%Y-%m-%d') `time`
-        from
-            word w
-        group by
-            time
-        order by
-            time
+            t.time,
+            t.count as `increment`,
+            sum(t.count) over( order by t.time) as total
+        from (
+            select
+                count(1) `count`,
+                DATE_FORMAT(create_time , '%Y-%m-%d') `time`
+            from
+                word w
+            group by
+                time
+            order by
+                time
+        ) t
     </select>
 
     <insert id="addWordGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.WordGroupDO">
