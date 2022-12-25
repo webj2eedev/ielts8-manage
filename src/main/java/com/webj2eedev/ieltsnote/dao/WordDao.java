@@ -1,9 +1,9 @@
 package com.webj2eedev.ieltsnote.dao;
 
-import com.webj2eedev.ieltsnote.entity.WordNewlyAddedDO;
-import com.webj2eedev.ieltsnote.entity.WordDO;
-import com.webj2eedev.ieltsnote.entity.WordGroupDO;
-import com.webj2eedev.ieltsnote.entity.WordGroupDtlDO;
+import com.webj2eedev.ieltsnote.entity.word.WordNewlyAddedDO;
+import com.webj2eedev.ieltsnote.entity.word.WordDO;
+import com.webj2eedev.ieltsnote.entity.word.WordGroupDO;
+import com.webj2eedev.ieltsnote.entity.word.WordGroupDtlDO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

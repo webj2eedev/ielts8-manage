@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.webj2eedev.ieltsnote.dao.WordDao">
-    <insert id="addWord" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.WordDO">
+    <insert id="addWord" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.word.WordDO">
         INSERT INTO word
         (word, phonetic_british, phonetic_american, speech_british_ossid, speech_american_ossid, comment, creator, create_time)
         VALUES(#{word}, #{phoneticBritish}, #{phoneticAmerican}, #{speechBritishOssid}, #{speechAmericanOssid}, #{comment}, #{creator}, NOW());
@@ -12,7 +12,7 @@
         WHERE uid = #{uid}
     </delete>
 
-    <update id="updateWord" parameterType="com.webj2eedev.ieltsnote.entity.WordDO">
+    <update id="updateWord" parameterType="com.webj2eedev.ieltsnote.entity.word.WordDO">
         update word
         set
             update_time = NOW()
@@ -53,7 +53,7 @@
             uid = #{uid}
     </update>
 
-    <select id="queryWord" resultType="com.webj2eedev.ieltsnote.entity.WordDO">
+    <select id="queryWord" resultType="com.webj2eedev.ieltsnote.entity.word.WordDO">
         select
             uid,
             word,
@@ -78,7 +78,7 @@
             word = #{word}
     </select>
 
-    <select id="queryWords" resultType="com.webj2eedev.ieltsnote.entity.WordDO">
+    <select id="queryWords" resultType="com.webj2eedev.ieltsnote.entity.word.WordDO">
         select
             uid,
             word,
@@ -115,7 +115,7 @@
         SELECT count(word) FROM word WHERE word = #{word}
     </select>
 
-    <select id="summarizeWordNewlyAdded" resultType="com.webj2eedev.ieltsnote.entity.WordNewlyAddedDO">
+    <select id="summarizeWordNewlyAdded" resultType="com.webj2eedev.ieltsnote.entity.word.WordNewlyAddedDO">
         select
             t.time,
             t.count as `increment`,
@@ -133,13 +133,13 @@
         ) t
     </select>
 
-    <insert id="addWordGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.WordGroupDO">
+    <insert id="addWordGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.word.WordGroupDO">
         INSERT INTO word_group
         (label, comment, creator, create_time)
         VALUES(#{label}, #{comment}, #{creator}, NOW());
     </insert>
 
-    <insert id="addWordInWordGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.WordGroupDtlDO">
+    <insert id="addWordInWordGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.word.WordGroupDtlDO">
         INSERT INTO word_group_dtl
         (group_id, word_id, comment, creator, create_time)
         VALUES(#{groupId}, #{wordId}, #{comment}, #{creator}, NOW());
@@ -150,7 +150,7 @@
         WHERE group_id = #{groupId} and word_id=#{wordId};
     </delete>
 
-    <select id="queryWordsInWordGroup" resultType="com.webj2eedev.ieltsnote.entity.WordDO">
+    <select id="queryWordsInWordGroup" resultType="com.webj2eedev.ieltsnote.entity.word.WordDO">
         select
             w.uid,
             w.word,

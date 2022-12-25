@@ -1,4 +1,4 @@
-package com.webj2eedev.ieltsnote.entity;
+package com.webj2eedev.ieltsnote.entity.word;
 
 import lombok.Builder;
 import lombok.Data;

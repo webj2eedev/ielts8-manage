@@ -1,15 +1,16 @@
-package com.webj2eedev.ieltsnote.entity;
+package com.webj2eedev.ieltsnote.entity.writing;
 
 import lombok.Builder;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Builder
 @Data
-public class WordGroupDO implements Serializable {
-    private Integer uid;
+public class WritingCategoryDO {
+    private Integer id;
+    private Integer parentId;
+    private Integer order;
     private String label;
     private String comment;
     private Integer creator;

@@ -1,10 +1,10 @@
 package com.webj2eedev.ieltsnote.bo;
 
 import com.webj2eedev.ieltsnote.dao.WordDao;
-import com.webj2eedev.ieltsnote.entity.WordNewlyAddedDO;
-import com.webj2eedev.ieltsnote.entity.WordDO;
-import com.webj2eedev.ieltsnote.entity.WordGroupDO;
-import com.webj2eedev.ieltsnote.entity.WordGroupDtlDO;
+import com.webj2eedev.ieltsnote.entity.word.WordNewlyAddedDO;
+import com.webj2eedev.ieltsnote.entity.word.WordDO;
+import com.webj2eedev.ieltsnote.entity.word.WordGroupDO;
+import com.webj2eedev.ieltsnote.entity.word.WordGroupDtlDO;
 import com.webj2eedev.ieltsnote.utils.WordUtil;
 import com.webj2eedev.ieltsnote.utils.minio.MINIOClient;
 import org.springframework.beans.factory.annotation.Autowired;

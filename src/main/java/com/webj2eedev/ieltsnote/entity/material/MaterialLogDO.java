@@ -11,6 +11,6 @@ public class MaterialLogDO {
     private Integer uid;
     private Integer materialId;
     private MaterialOperation operation;
-    private String creator;
+    private Integer creator;
     private Timestamp logTime;
 }
