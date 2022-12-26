@@ -32,115 +32,66 @@
             id = #{id}
     </update>
 
-<!--    <select id="queryWritings" parameterType="com.webj2eedev.ieltsnote.entity.WritingCategoryDO" resultType="com.webj2eedev.ieltsnote.entity.WritingExpressionDO">-->
-<!--        select-->
-<!--            cace.part,-->
-<!--            cace.category,-->
-<!--            cace.id expression_id,-->
-<!--            cace.title expression_title,-->
-<!--            cace.stem expression_stem,-->
-<!--            cace.comment expression_comment,-->
-<!--            cace.creator expression_creator,-->
-<!--            cace.create_time expression_create_time,-->
-<!--            cace.update_time expression_update_time,-->
-<!--            cacs.uid sample_id,-->
-<!--            cacs.draft sample_draft,-->
-<!--            cacs.overall_band_score sample_overall_band_score,-->
-<!--            cacs.draft_analyzer sample_draft_analyzer,-->
-<!--            cacs.comment sample_comment,-->
-<!--            cacs.creator sample_creator,-->
-<!--            cacs.create_time sample_create_time,-->
-<!--            cacs.update_time sample_update_time-->
-<!--        from-->
-<!--            writing_expression cace-->
-<!--        left join writing_sample cacs-->
-<!--        on-->
-<!--            cace.id = cacs.id-->
-<!--        where cace.category  = #{id}-->
-<!--        order by expression_title-->
-<!--    </select>-->
+    <select id="querySamples" resultType="com.webj2eedev.ieltsnote.entity.writing.WritingSampleDO">
+        SELECT uid, category_id, title, content, comment, creator, create_time, update_time
+        FROM writing_sample
+        WHERE category_id = #{categoryId}
+    </select>
 
-<!--    <insert id="addExpression" useGeneratedKeys="true" keyProperty="expressionId" keyColumn="id" parameterType="com.webj2eedev.ieltsnote.entity.WritingExpressionDO">-->
-<!--        insert into writing_expression (part, category, title, stem, comment, creator, create_time)-->
-<!--        values-->
-<!--        (#{part}, #{category}, #{expressionTitle},  #{expressionStem}, #{expressionComment}, #{expressionCreator}, NOW())-->
-<!--    </insert>-->
+    <insert id="addSample" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid" parameterType="com.webj2eedev.ieltsnote.entity.writing.WritingSampleDO">
+        INSERT INTO writing_sample
+        (category_id, title, content, comment, creator, create_time)
+        VALUES(#{categoryId}, #{title}, #{content}, #{comment}, #{creator}, NOW());
+    </insert>
 
-<!--    <update id="updateExpression" parameterType="com.webj2eedev.ieltsnote.entity.WritingExpressionDO">-->
-<!--        update writing_expression-->
-<!--        set-->
-<!--            update_time = NOW()-->
-<!--        <if test="expressionComment!=null and expressionComment!=''">-->
-<!--            , comment = #{expressionComment}-->
-<!--        </if >-->
-<!--        <if test="expressionStem!=null and expressionStem!=''">-->
-<!--            , stem = #{expressionStem}-->
-<!--        </if >-->
-<!--        WHERE-->
-<!--            id = #{expressionId}-->
-<!--    </update>-->
+    <delete id="deleteSample">
+        delete FROM writing_sample
+        WHERE
+            uid = #{uid}
+    </delete>
 
-<!--    <delete id="deleteExpression" parameterType="com.webj2eedev.ieltsnote.entity.WritingExpressionDO">-->
-<!--        delete FROM writing_expression-->
-<!--        WHERE-->
-<!--        id = #{expressionId}-->
-<!--    </delete>-->
+    <update id="updateSample" parameterType="com.webj2eedev.ieltsnote.entity.writing.WritingSampleDO">
+        update writing_sample
+        set
+            update_time = NOW()
+        <if test="title!=null ">
+            , title = #{title}
+        </if >
+        <if test="content!=null">
+            , content = #{content}
+        </if >
+        <if test="comment!=null">
+            , comment = #{comment}
+        </if >
+        WHERE
+            uid = #{uid}
+    </update>
 
-<!--    <insert id="addSample" useGeneratedKeys="true" keyProperty="sampleId" keyColumn="uid" parameterType="com.webj2eedev.ieltsnote.entity.WritingExpressionDO">-->
-<!--        insert into writing_sample (id, draft, overall_band_score, draft_analyzer, comment, creator, create_time)-->
-<!--        values-->
-<!--        (#{expressionId}, #{sampleDraft}, #{sampleOverallBandScore}, #{sampleDraftAnalyzer}, #{sampleComment}, #{sampleCreator}, NOW())-->
-<!--    </insert>-->
+    <insert id="log" parameterType="com.webj2eedev.ieltsnote.entity.writing.WritingLogDO">
+        INSERT INTO writing_log
+        (`operation`, part, category_id, sample_id, creator, log_time)
+        VALUES(#{operation}, #{part}, #{categoryId}, #{sampleId}, #{creator}, NOW());
+    </insert>
 
-<!--    <update id="updateSample" parameterType="com.webj2eedev.ieltsnote.entity.WritingExpressionDO">-->
-<!--        update writing_sample-->
-<!--        set-->
-<!--            update_time = NOW()-->
-<!--        <if test="sampleComment!=null and sampleComment!=''">-->
-<!--            , comment = #{sampleComment}-->
-<!--        </if >-->
-<!--        <if test="sampleDraft!=null and sampleDraft!=''">-->
-<!--            , draft = #{sampleDraft}-->
-<!--        </if >-->
-<!--        <if test="sampleDraftAnalyzer!=null and sampleDraftAnalyzer!=''">-->
-<!--            , draft_analyzer = #{sampleDraftAnalyzer}-->
-<!--        </if >-->
-<!--        WHERE-->
-<!--            uid = #{sampleId}-->
-<!--    </update>-->
-
-<!--    <delete id="deleteSample" parameterType="com.webj2eedev.ieltsnote.entity.WritingExpressionDO">-->
-<!--        delete FROM writing_sample-->
-<!--        WHERE-->
-<!--        uid = #{sampleId}-->
-<!--    </delete>-->
-
-
-<!--    <insert id="log" parameterType="com.webj2eedev.ieltsnote.entity.WritingLogDO">-->
-<!--        INSERT INTO writing_log-->
-<!--        (`action`, part, category_id, category_label, expression_id, expression_text, sample_id, sample_text, creator, log_time)-->
-<!--        VALUES(#{action}, #{part}, #{categoryId}, #{categoryLabel}, #{expressionId}, #{expressionText}, #{sampleId}, #{sampleText}, #{creator}, NOW());-->
-<!--    </insert>-->
-
-<!--    <select id="queryWritingSummary" parameterType="com.webj2eedev.ieltsnote.entity.WritingLogDO" resultType="com.webj2eedev.ieltsnote.entity.WritingSummaryDO">-->
-<!--        select-->
-<!--            B.practice_day,-->
-<!--            sum(if(B.part = 1, B.question_cnt,	0)) as task1,-->
-<!--            sum(if(B.part = 2, B.question_cnt,	0)) as task2-->
-<!--        from (-->
-<!--            select-->
-<!--                sl.part,-->
-<!--                count(distinct sample_id) question_cnt,-->
-<!--                DATE_FORMAT(log_time, '%Y-%m-%d') practice_day-->
-<!--            from-->
-<!--                writing_log sl-->
-<!--            where-->
-<!--                creator = #{creator}-->
-<!--                and sample_id != -1-->
-<!--            group by-->
-<!--                practice_day, sl.part-->
-<!--            ) as B-->
-<!--        group by B.practice_day-->
-<!--    </select>-->
+    <select id="queryWritingNewlyAdded" resultType="com.webj2eedev.ieltsnote.entity.writing.WritingNewlyAddedDO">
+        select
+            B.practice_day,
+            sum(if(B.part = 1, B.question_cnt,	0)) as task1,
+            sum(if(B.part = 2, B.question_cnt,	0)) as task2
+        from (
+            select
+                sl.part,
+                count(distinct sample_id) question_cnt,
+                DATE_FORMAT(log_time, '%Y-%m-%d') practice_day
+            from
+                writing_log sl
+            where
+                creator = #{creator}
+                and sample_id != -1
+            group by
+                practice_day, sl.part
+            ) as B
+        group by B.practice_day
+    </select>
 </mapper>
 

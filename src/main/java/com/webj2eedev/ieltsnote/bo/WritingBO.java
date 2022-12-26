@@ -3,7 +3,7 @@ package com.webj2eedev.ieltsnote.bo;
 import com.webj2eedev.ieltsnote.dao.WritingDao;
 import com.webj2eedev.ieltsnote.dto.writing.AddChildCategoryDTO;
 import com.webj2eedev.ieltsnote.dto.writing.AddSiblingCategoryDTO;
-import com.webj2eedev.ieltsnote.entity.writing.WritingCategoryDO;
+import com.webj2eedev.ieltsnote.entity.writing.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -34,59 +34,37 @@ public class WritingBO {
         return ret;
     }
 
-//    public List<WritingExpressionDO> queryWritings(WritingCategoryDTO pDto) {
-//        WritingCategoryDO pDo = WritingCategoryDO.builder().build();
-//        BeanUtils.copyProperties(pDto, pDo);
-//
-//        List<WritingExpressionDO> rDos = dao.queryWritings(pDo);
-//        return rDos;
-//    }
-//
-//    public int addExpression(WritingExpressionDO pDo) {
-//        dao.addExpression(pDo);
-//
-//        return pDo.getExpressionId();
-//    }
-//
-//    public Long updateExpression(WritingExpressionDO pDo) {
-//        Long ret = dao.updateExpression(pDo);
-//        return ret;
-//    }
-//
-//    public int addSample(WritingExpressionDO pDo) {
-//        dao.addSample(pDo);
-//
-//        return pDo.getSampleId();
-//    }
-//
-//    public Long updateSample(WritingExpressionDO pDo) {
-//        Long ret = dao.updateSample(pDo);
-//        return ret;
-//    }
-//
-//    public Long deleteExpression(WritingExpressionDO pDo) {
-//        Long ret = dao.deleteExpression(pDo);
-//        return ret;
-//    }
-//    public Long deleteSample(WritingExpressionDO pDo) {
-//        Long ret = dao.deleteSample(pDo);
-//        return ret;
-//    }
-//
-//
-//    public Long log(WritingLogDO pDo) {
-//        Long ret = dao.log(pDo);
-//        return ret;
-//    }
-//
-//    public List<WritingSummaryDTO> queryWritingSummary(WritingLogDO pDo) {
-//        List<WritingSummaryDO> rDos = dao.queryWritingSummary(pDo);
-//        return rDos.stream().map(rDo -> {
-//            WritingSummaryDTO rDto = WritingSummaryDTO.builder().build();
-//            BeanUtils.copyProperties(rDo, rDto);
-//            return rDto;
-//        }).collect(Collectors.toList());
-//    }
+    public List<WritingSampleDO> querySamples(Integer categoryId) {
+        List<WritingSampleDO> ret = dao.querySamples(categoryId);
+        return ret;
+    }
 
+    public int addSample(WritingSampleDO pdo) {
+        dao.addSample(pdo);
 
+        WritingLogDO log = WritingLogDO.builder().part(2).categoryId(pdo.getCategoryId()).sampleId(pdo.getUid()).operation(WritingOperation.ADD).creator(pdo.getCreator()).build();
+        dao.log(log);
+
+        return pdo.getUid();
+    }
+
+    public Long updateSample(WritingSampleDO pDo) {
+        Long ret = dao.updateSample(pDo);
+        return ret;
+    }
+
+    public Long deleteSample(Integer uid) {
+        Long ret = dao.deleteSample(uid);
+        return ret;
+    }
+
+    public Long log(WritingLogDO pDo) {
+        Long ret = dao.log(pDo);
+        return ret;
+    }
+
+    public List<WritingNewlyAddedDO> queryWritingNewlyAdded(Integer creator) {
+        List<WritingNewlyAddedDO> ret = dao.queryWritingNewlyAdded(creator);
+        return ret;
+    }
 }
