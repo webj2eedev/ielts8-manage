@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Builder
 @Data
-public class AddWordInWordGroupDTO implements Serializable {
+public class AddWordInGroupDTO implements Serializable {
     private Integer groupId;
     private String word;
     private Integer creator;

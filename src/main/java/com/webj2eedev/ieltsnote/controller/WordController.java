@@ -102,21 +102,21 @@ public class WordController {
 
     @ResponseBody
     @RequestMapping(value = "/addWordInGroup", method = {RequestMethod.POST})
-    public WrapperResponse<Integer> addWordInGroup(@RequestBody AddWordInWordGroupDTO pdto) {
+    public WrapperResponse<Integer> addWordInGroup(@RequestBody AddWordInGroupDTO pdto) {
         Integer ret = bo.addWordInGroup(pdto.getGroupId(), pdto.getWord().trim(), pdto.getCreator());
         return WrapperResponse.ok(ret);
     }
 
     @ResponseBody
     @RequestMapping(value = "/deleteWordInGroup", method = {RequestMethod.POST})
-    public WrapperResponse<Long> deleteWordInGroup(@RequestBody DeleteWordInWordGroupDTO pdto) {
+    public WrapperResponse<Long> deleteWordInGroup(@RequestBody DeleteWordInGroupDTO pdto) {
         Long ret = bo.deleteWordInGroup(pdto.getRefId(), pdto.getWordId(), pdto.getCascade());
         return WrapperResponse.ok(ret);
     }
 
     @ResponseBody
     @RequestMapping(value = "/queryWordsInGroup", method = {RequestMethod.POST})
-    public WrapperResponse<PageInfo> queryWordsInGroup(@RequestBody QueryWordsInWordGroupDTO pdto) {
+    public WrapperResponse<PageInfo> queryWordsInGroup(@RequestBody QueryWordsInGroupDTO pdto) {
         Page<WordDO> objects = PageHelper.startPage(pdto.getPagenum(), pdto.getPagesize());
 
         bo.queryWordsInGroup(pdto.getGroupId(), pdto.getCondition());

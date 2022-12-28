@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Builder
 @Data
-public class QueryWordsInWordGroupDTO implements Serializable {
+public class QueryWordsInGroupDTO implements Serializable {
     private Integer groupId;
     private String condition;
 

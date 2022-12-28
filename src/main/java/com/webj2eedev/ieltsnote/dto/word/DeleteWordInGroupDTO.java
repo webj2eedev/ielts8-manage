@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Builder
 @Data
-public class DeleteWordInWordGroupDTO implements Serializable {
+public class DeleteWordInGroupDTO implements Serializable {
     private Integer refId;
     private Integer wordId;
     private Boolean cascade;
