@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webj2eedev.ieltsnote.dao.SentenceDao">
+    <insert id="addSentence" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.sentence.SentenceDO">
+        INSERT INTO sentence
+        (content, comment, creator, create_time)
+        VALUES(#{content}, #{comment}, #{creator}, NOW());
+    </insert>
+
+    <delete id="deleteSentence">
+        delete FROM sentence
+        WHERE uid = #{uid}
+    </delete>
+
+    <update id="updateSentence" parameterType="com.webj2eedev.ieltsnote.entity.sentence.SentenceDO">
+        update sentence
+        set
+            update_time = NOW()
+            <if test="content!=null">
+                , content = #{content}
+            </if >
+            <if test="comment!=null">
+                , comment = #{comment}
+            </if >
+        WHERE
+            uid = #{uid}
+    </update>
+
+    <select id="querySentence" resultType="com.webj2eedev.ieltsnote.entity.sentence.SentenceDO">
+        select
+            uid,
+            content,
+            comment,
+            creator,
+            create_time,
+            update_time
+        from sentence
+        WHERE
+            uid = #{uid}
+    </select>
+
+    <select id="querySentences" resultType="com.webj2eedev.ieltsnote.entity.sentence.SentenceDO">
+        select
+            uid,
+            content,
+            comment,
+            creator,
+            create_time,
+            update_time
+        from sentence
+        WHERE
+            1 = 1
+            <if test="condition!=null and condition!=''">
+                and content like '%#{condition}%'
+            </if >
+        ORDER by
+        case
+            when update_time is null then create_time
+            else update_time
+        end desc
+    </select>
+
+    <select id="querySentenceNewlyAdded" resultType="com.webj2eedev.ieltsnote.entity.sentence.SentenceNewlyAddedDO">
+        select
+            t.time,
+            t.count as `increment`,
+            sum(t.count) over( order by t.time) as total
+        from (
+            select
+                count(1) `count`,
+                DATE_FORMAT(create_time , '%Y-%m-%d') `time`
+            from
+                sentence w
+            group by
+                time
+            order by
+                time
+        ) t
+    </select>
+
+    <insert id="addSentenceGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.sentence.SentenceGroupDO">
+        INSERT INTO sentence_group
+        (label, comment, creator, create_time)
+        VALUES(#{label}, #{comment}, #{creator}, NOW());
+    </insert>
+
+    <insert id="addSentenceInGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.sentence.SentenceGroupDtlDO">
+        INSERT INTO sentence_group_dtl
+        (group_id, sentence_id, comment, creator, create_time)
+        VALUES(#{groupId}, #{sentenceId}, #{comment}, #{creator}, NOW());
+    </insert>
+
+    <delete id="deleteSentenceInGroup">
+        DELETE FROM sentence_group_dtl
+        WHERE group_id = #{groupId} and sentence_id=#{sentenceId};
+    </delete>
+
+    <select id="querySentencesInGroup" resultType="com.webj2eedev.ieltsnote.entity.sentence.SentenceDO">
+        select
+            w.uid,
+            w.content,
+            w.comment,
+            w.creator,
+            w.create_time,
+            w.update_time
+        from
+            sentence w ,
+            sentence_group_dtl wrd
+        where
+            w.uid = wrd.sentence_id
+            and wrd.group_id = #{groupId}
+            <if test="condition!=null and condition!=''">
+                and w.content like '%#{condition}%'
+            </if >
+        ORDER by
+        case
+            when w.update_time is null then w.create_time
+            else w.update_time
+        end desc
+    </select>
+
+</mapper>
+

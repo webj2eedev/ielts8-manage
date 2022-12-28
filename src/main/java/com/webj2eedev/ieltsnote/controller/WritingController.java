@@ -6,6 +6,7 @@ import com.webj2eedev.ieltsnote.dto.writing.*;
 import com.webj2eedev.ieltsnote.entity.writing.WritingCategoryDO;
 import com.webj2eedev.ieltsnote.entity.writing.WritingNewlyAddedDO;
 import com.webj2eedev.ieltsnote.entity.writing.WritingSampleDO;
+import com.webj2eedev.ieltsnote.entity.writing.WritingSampleLinkDO;
 import com.webj2eedev.ieltsnote.utils.minio.MINIOClient;
 import com.webj2eedev.ieltsnote.utils.uuid.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,5 +107,19 @@ public class WritingController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/addSampleLink", method = {RequestMethod.POST})
+    public WrapperResponse<Long> addSampleLink(@RequestBody WritingSampleLinkDO dto) {
+        Long id = bo.addSampleLink(dto);
+        return WrapperResponse.ok(id);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/querySampleLinks", method = {RequestMethod.POST})
+    public WrapperResponse<List<WritingSampleLinkDO>> querySampleLinks(@RequestBody QuerySampleLinksDTO dto) {
+        List<WritingSampleLinkDO> ret = bo.querySampleLinks(dto.getSampleId());
+        return WrapperResponse.ok(ret);
     }
 }

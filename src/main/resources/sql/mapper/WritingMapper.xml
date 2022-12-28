@@ -93,5 +93,21 @@
             ) as B
         group by B.practice_day
     </select>
+
+
+
+    <insert id="addSampleLink" parameterType="com.webj2eedev.ieltsnote.entity.writing.WritingSampleLinkDO">
+        INSERT INTO ielts8.writing_sample_link
+        (sample_id, link_type, link_id)
+        VALUES(#{sampleId}, #{linkType}, #{linkId});
+    </insert>
+
+    <select id="querySampleLinks" resultType="com.webj2eedev.ieltsnote.entity.writing.WritingSampleLinkDO">
+        SELECT sample_id, link_type, link_id
+        FROM writing_sample_link
+        WHERE
+            sample_id = #{sampleId}
+    </select>
+
 </mapper>
 

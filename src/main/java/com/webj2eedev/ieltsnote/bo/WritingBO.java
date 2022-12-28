@@ -67,4 +67,14 @@ public class WritingBO {
         List<WritingNewlyAddedDO> ret = dao.queryWritingNewlyAdded(creator);
         return ret;
     }
+
+    public Long addSampleLink(WritingSampleLinkDO pdo) {
+        Long ret = dao.addSampleLink(pdo);
+        return ret;
+    }
+
+    public List<WritingSampleLinkDO> querySampleLinks(Integer sampleId) {
+        List<WritingSampleLinkDO> ret = dao.querySampleLinks(sampleId);
+        return ret;
+    }
 }
