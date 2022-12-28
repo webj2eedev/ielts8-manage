@@ -87,9 +87,9 @@ public class WordController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/summarizeWordNewlyAdded", method = {RequestMethod.POST})
-    public WrapperResponse<List<WordNewlyAddedDO>> summarizeWordNewlyAdded() {
-        List<WordNewlyAddedDO> ret = bo.summarizeWordNewlyAdded();
+    @RequestMapping(value = "/queryWordNewlyAdded", method = {RequestMethod.POST})
+    public WrapperResponse<List<WordNewlyAddedDO>> queryWordNewlyAdded() {
+        List<WordNewlyAddedDO> ret = bo.queryWordNewlyAdded();
         return WrapperResponse.ok(ret);
     }
 
@@ -101,9 +101,9 @@ public class WordController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/addWordInWordGroup", method = {RequestMethod.POST})
-    public WrapperResponse<Integer> addWordInWordGroup(@RequestBody AddWordInWordGroupDTO pdto) {
-        Integer ret = bo.addWordInWordGroup(pdto.getGroupId(), pdto.getWord().trim(), pdto.getCreator());
+    @RequestMapping(value = "/addWordInGroup", method = {RequestMethod.POST})
+    public WrapperResponse<Integer> addWordInGroup(@RequestBody AddWordInWordGroupDTO pdto) {
+        Integer ret = bo.addWordInGroup(pdto.getGroupId(), pdto.getWord().trim(), pdto.getCreator());
         return WrapperResponse.ok(ret);
     }
 
@@ -115,11 +115,11 @@ public class WordController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/queryWordsInWordGroup", method = {RequestMethod.POST})
-    public WrapperResponse<PageInfo> queryWordsInWordGroup(@RequestBody QueryWordsInWordGroupDTO pdto) {
+    @RequestMapping(value = "/queryWordsInGroup", method = {RequestMethod.POST})
+    public WrapperResponse<PageInfo> queryWordsInGroup(@RequestBody QueryWordsInWordGroupDTO pdto) {
         Page<WordDO> objects = PageHelper.startPage(pdto.getPagenum(), pdto.getPagesize());
 
-        bo.queryWordsInWordGroup(pdto.getGroupId(), pdto.getCondition());
+        bo.queryWordsInGroup(pdto.getGroupId(), pdto.getCondition());
 
         PageInfo<WordDO> pageInfo = new PageInfo<>(objects);
         return WrapperResponse.ok(pageInfo);

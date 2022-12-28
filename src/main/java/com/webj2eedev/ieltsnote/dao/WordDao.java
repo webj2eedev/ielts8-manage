@@ -20,13 +20,13 @@ public interface WordDao {
 
     boolean existWord(@Param("word") String word);
 
-    List<WordNewlyAddedDO> summarizeWordNewlyAdded();
+    List<WordNewlyAddedDO> queryWordNewlyAdded();
 
     Long addWordGroup(WordGroupDO pdo);
 
-    Long addWordInWordGroup(WordGroupDtlDO pdo);
+    Long addWordInGroup(WordGroupDtlDO pdo);
 
     Long deleteWordInGroup(@Param("groupId") Integer groupId, @Param("wordId") Integer wordId);
 
-    List<WordDO> queryWordsInWordGroup(@Param("groupId") int groupId, @Param("condition") String condition);
+    List<WordDO> queryWordsInGroup(@Param("groupId") int groupId, @Param("condition") String condition);
 }

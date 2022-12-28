@@ -115,7 +115,7 @@
         SELECT count(word) FROM word WHERE word = #{word}
     </select>
 
-    <select id="summarizeWordNewlyAdded" resultType="com.webj2eedev.ieltsnote.entity.word.WordNewlyAddedDO">
+    <select id="queryWordNewlyAdded" resultType="com.webj2eedev.ieltsnote.entity.word.WordNewlyAddedDO">
         select
             t.time,
             t.count as `increment`,
@@ -139,18 +139,18 @@
         VALUES(#{label}, #{comment}, #{creator}, NOW());
     </insert>
 
-    <insert id="addWordInWordGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.word.WordGroupDtlDO">
+    <insert id="addWordInGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.word.WordGroupDtlDO">
         INSERT INTO word_group_dtl
         (group_id, word_id, comment, creator, create_time)
         VALUES(#{groupId}, #{wordId}, #{comment}, #{creator}, NOW());
     </insert>
 
-    <delete id="deleteWordGroup">
+    <delete id="deleteWordInGroup">
         DELETE FROM word_group_dtl
         WHERE group_id = #{groupId} and word_id=#{wordId};
     </delete>
 
-    <select id="queryWordsInWordGroup" resultType="com.webj2eedev.ieltsnote.entity.word.WordDO">
+    <select id="queryWordsInGroup" resultType="com.webj2eedev.ieltsnote.entity.word.WordDO">
         select
             w.uid,
             w.word,

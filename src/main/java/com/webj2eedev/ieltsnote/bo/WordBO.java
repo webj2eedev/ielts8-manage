@@ -97,8 +97,8 @@ public class WordBO {
         return dao.existWord(word);
     }
 
-    public List<WordNewlyAddedDO> summarizeWordNewlyAdded() {
-        List<WordNewlyAddedDO> rDos = dao.summarizeWordNewlyAdded();
+    public List<WordNewlyAddedDO> queryWordNewlyAdded() {
+        List<WordNewlyAddedDO> rDos = dao.queryWordNewlyAdded();
         return rDos;
     }
 
@@ -108,7 +108,7 @@ public class WordBO {
         return pdo.getUid();
     }
 
-    public int addWordInWordGroup(int groupId, String word, int creator) {
+    public int addWordInGroup(int groupId, String word, int creator) {
         int wordId;
         WordDO exist = this.queryWord(word);
         if (exist != null) {
@@ -117,7 +117,7 @@ public class WordBO {
             wordId = this.addWord(word, creator);
         }
         WordGroupDtlDO pdo = WordGroupDtlDO.builder().groupId(groupId).wordId(wordId).creator(creator).build();
-        dao.addWordInWordGroup(pdo);
+        dao.addWordInGroup(pdo);
         return pdo.getUid();
     }
 
@@ -130,8 +130,8 @@ public class WordBO {
         }
     }
 
-    public List<WordDO> queryWordsInWordGroup(int refId, String condition) {
-        return dao.queryWordsInWordGroup(refId, condition);
+    public List<WordDO> queryWordsInGroup(int refId, String condition) {
+        return dao.queryWordsInGroup(refId, condition);
     }
 
 }

@@ -88,7 +88,7 @@ public class WritingController {
 
 
     @ResponseBody
-    @RequestMapping(value = "/queryWritingSummary", method = {RequestMethod.POST})
+    @RequestMapping(value = "/queryWritingNewlyAdded", method = {RequestMethod.POST})
     public WrapperResponse<List<WritingNewlyAddedDO>> queryWritingNewlyAdded(@RequestBody QuerySamplesNewlyAddedDTO dto) {
         List<WritingNewlyAddedDO> ret = bo.queryWritingNewlyAdded(dto.getCreator());
         return WrapperResponse.ok(ret);
