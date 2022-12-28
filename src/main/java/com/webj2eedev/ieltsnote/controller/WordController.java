@@ -110,7 +110,7 @@ public class WordController {
     @ResponseBody
     @RequestMapping(value = "/deleteWordInGroup", method = {RequestMethod.POST})
     public WrapperResponse<Long> deleteWordInGroup(@RequestBody DeleteWordInGroupDTO pdto) {
-        Long ret = bo.deleteWordInGroup(pdto.getRefId(), pdto.getWordId(), pdto.getCascade());
+        Long ret = bo.deleteWordInGroup(pdto.getGroupId(), pdto.getWordId(), pdto.getCascade());
         return WrapperResponse.ok(ret);
     }
 
