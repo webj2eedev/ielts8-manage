@@ -42,7 +42,7 @@ public class WritingBO {
     public int addSample(WritingSampleDO pdo) {
         dao.addSample(pdo);
 
-        WritingLogDO log = WritingLogDO.builder().part(2).categoryId(pdo.getCategoryId()).sampleId(pdo.getUid()).operation(WritingOperation.ADD).creator(pdo.getCreator()).build();
+        WritingLogDO log = WritingLogDO.builder().part(2).categoryId(pdo.getCategoryId()).sampleId(pdo.getUid()).operation(WritingLogDO.Operation.ADD).creator(pdo.getCreator()).build();
         dao.log(log);
 
         return pdo.getUid();

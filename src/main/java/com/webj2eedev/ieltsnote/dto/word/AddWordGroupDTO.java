@@ -8,6 +8,5 @@ import java.io.Serializable;
 @Builder
 @Data
 public class AddWordGroupDTO implements Serializable {
-    private String label;
     private Integer creator;
 }

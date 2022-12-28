@@ -135,8 +135,8 @@
 
     <insert id="addWordGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.word.WordGroupDO">
         INSERT INTO word_group
-        (label, comment, creator, create_time)
-        VALUES(#{label}, #{comment}, #{creator}, NOW());
+        (comment, creator, create_time)
+        VALUES(#{comment}, #{creator}, NOW());
     </insert>
 
     <insert id="addWordInGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.word.WordGroupDtlDO">

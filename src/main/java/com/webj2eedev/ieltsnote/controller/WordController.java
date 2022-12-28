@@ -96,7 +96,7 @@ public class WordController {
     @ResponseBody
     @RequestMapping(value = "/addWordGroup", method = {RequestMethod.POST})
     public WrapperResponse<Integer> addWordGroup(@RequestBody AddWordGroupDTO pdto) {
-        int ret = bo.addWordGroup(pdto.getLabel().trim(), pdto.getCreator());
+        int ret = bo.addWordGroup(pdto.getCreator());
         return WrapperResponse.ok(ret);
     }
 

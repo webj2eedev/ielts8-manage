@@ -80,8 +80,8 @@
 
     <insert id="addSentenceGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.sentence.SentenceGroupDO">
         INSERT INTO sentence_group
-        (label, comment, creator, create_time)
-        VALUES(#{label}, #{comment}, #{creator}, NOW());
+        (comment, creator, create_time)
+        VALUES(#{comment}, #{creator}, NOW());
     </insert>
 
     <insert id="addSentenceInGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.sentence.SentenceGroupDtlDO">

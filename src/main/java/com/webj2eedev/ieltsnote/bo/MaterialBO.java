@@ -15,7 +15,7 @@ public class MaterialBO {
     public int addMaterial(MaterialDO pdo) {
         dao.addMaterial(pdo);
 
-        MaterialLogDO log = MaterialLogDO.builder().materialId(pdo.getUid()).operation(MaterialOperation.ADD).creator(pdo.getCreator()).build();
+        MaterialLogDO log = MaterialLogDO.builder().materialId(pdo.getUid()).operation(MaterialLogDO.Operation.ADD).creator(pdo.getCreator()).build();
         dao.log(log);
 
         return pdo.getUid();

@@ -10,7 +10,6 @@ import java.sql.Timestamp;
 @Data
 public class WordGroupDO implements Serializable {
     private Integer uid;
-    private String label;
     private String comment;
     private Integer creator;
     private Timestamp createTime;

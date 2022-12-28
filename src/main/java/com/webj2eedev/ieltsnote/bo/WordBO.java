@@ -102,8 +102,8 @@ public class WordBO {
         return rDos;
     }
 
-    public int addWordGroup(String label, int creator) {
-        WordGroupDO pdo = WordGroupDO.builder().label(label).creator(creator).build();
+    public int addWordGroup(int creator) {
+        WordGroupDO pdo = WordGroupDO.builder().creator(creator).build();
         dao.addWordGroup(pdo);
         return pdo.getUid();
     }

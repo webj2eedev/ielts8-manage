@@ -51,8 +51,8 @@ public class SentenceBO {
         return rDos;
     }
 
-    public int addSentenceGroup(String label, int creator) {
-        SentenceGroupDO pdo = SentenceGroupDO.builder().label(label).creator(creator).build();
+    public int addSentenceGroup(int creator) {
+        SentenceGroupDO pdo = SentenceGroupDO.builder().creator(creator).build();
         dao.addSentenceGroup(pdo);
         return pdo.getUid();
     }

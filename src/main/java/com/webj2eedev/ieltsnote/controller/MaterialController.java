@@ -91,16 +91,16 @@ public class MaterialController {
         }
 
         JSONObject c = new JSONObject();
-        if (MaterialAttachmentType.EXTERNAL_URL.toString().equals(type)) {
-            c.put("type", MaterialAttachmentType.EXTERNAL_URL);
+        if (MaterialAttachmentDO.AttachmentType.EXTERNAL_URL.toString().equals(type)) {
+            c.put("type", MaterialAttachmentDO.AttachmentType.EXTERNAL_URL);
             c.put("externalUrl", content);
-        } else if (MaterialAttachmentType.FILE.toString().equals(type)) {
-            c.put("type", MaterialAttachmentType.FILE);
+        } else if (MaterialAttachmentDO.AttachmentType.FILE.toString().equals(type)) {
+            c.put("type", MaterialAttachmentDO.AttachmentType.FILE);
             c.put("fileName", fileName);
             c.put("fileContentType", fileContentType);
             c.put("fileOssid", fileOssid);
-        } else if (MaterialAttachmentType.SHARING_EMBED.toString().equals(type)) {
-            c.put("type", MaterialAttachmentType.SHARING_EMBED);
+        } else if (MaterialAttachmentDO.AttachmentType.SHARING_EMBED.toString().equals(type)) {
+            c.put("type", MaterialAttachmentDO.AttachmentType.SHARING_EMBED);
             c.put("code", content);
         } else {
             throw new RuntimeException("type[" + type + "]识别不了.");
@@ -122,7 +122,7 @@ public class MaterialController {
     public WrapperResponse<Integer> deleteMaterialAttachment(@RequestBody DeleteMaterialAttachmentDTO pdto) {
 
         JSONObject attachment = JSONObject.parseObject(bo.queryMaterialAttachment(pdto.getUid()).getAttachment());
-        if (MaterialAttachmentType.FILE.toString().equals(attachment.getString("type"))) {
+        if (MaterialAttachmentDO.AttachmentType.FILE.toString().equals(attachment.getString("type"))) {
             minio.removeObject(MATERIAL_BUCKET_NAME, attachment.getString("fileOssid"));
         }
 

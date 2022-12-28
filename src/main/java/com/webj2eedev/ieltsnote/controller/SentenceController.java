@@ -96,7 +96,7 @@ public class SentenceController {
     @ResponseBody
     @RequestMapping(value = "/addSentenceGroup", method = {RequestMethod.POST})
     public WrapperResponse<Integer> addSentenceGroup(@RequestBody AddSentenceGroupDTO pdto) {
-        int ret = bo.addSentenceGroup(pdto.getLabel().trim(), pdto.getCreator());
+        int ret = bo.addSentenceGroup(pdto.getCreator());
         return WrapperResponse.ok(ret);
     }
 
