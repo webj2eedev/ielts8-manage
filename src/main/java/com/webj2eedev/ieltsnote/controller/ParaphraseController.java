@@ -31,20 +31,10 @@ public class ParaphraseController {
 
     @ResponseBody
     @RequestMapping(value = "/addParaphrase", method = {RequestMethod.POST})
-    public WrapperResponse<ParaphraseDO> addParaphrase(@RequestBody AddParaphraseDTO pdto) {
+    public WrapperResponse<Integer> addParaphrase(@RequestBody AddParaphraseDTO pdto) {
         String text = pdto.getText().trim();
         int uid = bo.addParaphrase(text, pdto.getCreator());
-
-        ParaphraseDO ret = bo.queryParaphrase(uid);
-
-        return WrapperResponse.ok(ret);
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/queryParaphrase", method = {RequestMethod.POST})
-    public WrapperResponse<ParaphraseDO> queryParaphrase(@RequestBody QueryParaphraseDTO pdto) {
-        ParaphraseDO ret = bo.queryParaphrase(pdto.getUid());
-        return WrapperResponse.ok(ret);
+        return WrapperResponse.ok(uid);
     }
 
     @ResponseBody
@@ -97,12 +87,10 @@ public class ParaphraseController {
 
     @ResponseBody
     @RequestMapping(value = "/addParaphraseRewrite", method = {RequestMethod.POST})
-    public WrapperResponse<ParaphraseDO> addParaphraseRewrite(@RequestBody AddParaphraseRewriteDTO pdto) {
+    public WrapperResponse<Integer> addParaphraseRewrite(@RequestBody AddParaphraseRewriteDTO pdto) {
         int uid = bo.addParaphraseRewrite(pdto);
 
-        ParaphraseDO ret = bo.queryParaphrase(uid);
-
-        return WrapperResponse.ok(ret);
+        return WrapperResponse.ok(uid);
     }
 
     //////////////////////////////////////////////////

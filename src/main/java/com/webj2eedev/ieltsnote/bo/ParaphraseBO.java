@@ -23,7 +23,6 @@ public class ParaphraseBO {
         dao.addParaphrase(pdo);
 
         return pdo.getUid();
-
     }
 
     public Long deleteParaphrase(Integer uid) {
@@ -34,10 +33,6 @@ public class ParaphraseBO {
     public Long updateParaphrase(ParaphraseDO pdo) {
         Long ret = dao.updateParaphrase(pdo);
         return ret;
-    }
-
-    public ParaphraseDO queryParaphrase(int uid) {
-        return dao.queryParaphrase(uid);
     }
 
     public List<ParaphraseDO> queryParaphrases(String condition) {

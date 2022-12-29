@@ -26,38 +26,28 @@
             uid = #{uid}
     </update>
 
-    <select id="queryParaphrase" resultType="com.webj2eedev.ieltsnote.entity.paraphrase.ParaphraseDO">
-        select
-            uid,
-            text,
-            comment,
-            creator,
-            create_time,
-            update_time
-        from paraphrase
-        WHERE
-            uid = #{uid}
-    </select>
-
     <select id="queryParaphrases" resultType="com.webj2eedev.ieltsnote.entity.paraphrase.ParaphraseDO">
         select
-            uid,
-            text,
-            comment,
-            creator,
-            create_time,
-            update_time
-        from paraphrase
+            p.uid,
+            p.text,
+            pr.rewrite,
+            p.comment,
+            p.creator,
+            p.create_time,
+            p.update_time
+        from paraphrase p
+        left join paraphrase_rewrite pr
+            on p.uid = pr.paraphrase_id
         WHERE
             1 = 1
-            <if test="condition!=null and condition!=''">
-                and text like '%#{condition}%'
-            </if >
+        <if test="condition!=null and condition!=''">
+            and text like '%#{condition}%'
+        </if >
         ORDER by
-        case
-            when update_time is null then create_time
-            else update_time
-        end desc
+            case
+                when p.update_time is null then p.create_time
+                else p.update_time
+            end desc
     </select>
 
     <select id="queryParaphraseNewlyAdded" resultType="com.webj2eedev.ieltsnote.entity.paraphrase.ParaphraseNewlyAddedDO">
@@ -117,19 +107,23 @@
         select
             w.uid,
             w.text,
+            pr.rewrite,
             w.comment,
             w.creator,
             w.create_time,
             w.update_time
         from
-            paraphrase w ,
-            paraphrase_group_dtl wrd
-        where
-            w.uid = wrd.paraphrase_id
-            and wrd.group_id = #{groupId}
+            paraphrase w
+        inner join paraphrase_group_dtl wrd
+            on
+                w.uid = wrd.paraphrase_id
+                and wrd.group_id = #{groupId}
             <if test="condition!=null and condition!=''">
                 and w.text like '%#{condition}%'
             </if >
+        left join paraphrase_rewrite pr
+            on
+                w.uid = pr.paraphrase_id
         ORDER by
         case
             when w.update_time is null then w.create_time

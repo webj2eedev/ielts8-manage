@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 public class ParaphraseDO implements Serializable {
     private Integer uid;
     private String text;
+    private String rewrite;
     private String comment;
     private Integer creator;
     private Timestamp createTime;

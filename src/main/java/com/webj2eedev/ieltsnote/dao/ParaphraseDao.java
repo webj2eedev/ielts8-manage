@@ -12,8 +12,6 @@ public interface ParaphraseDao {
 
     Long updateParaphrase(ParaphraseDO pdo);
 
-    ParaphraseDO queryParaphrase(@Param("uid") int uid);
-
     List<ParaphraseDO> queryParaphrases(@Param("condition") String condition);
 
     List<ParaphraseNewlyAddedDO> queryParaphraseNewlyAdded();
