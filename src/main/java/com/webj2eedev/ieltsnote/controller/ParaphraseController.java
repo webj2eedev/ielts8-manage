@@ -1,8 +1,5 @@
 package com.webj2eedev.ieltsnote.controller;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.webj2eedev.ieltsnote.bo.ParaphraseBO;
 import com.webj2eedev.ieltsnote.common.web.WrapperResponse;
 import com.webj2eedev.ieltsnote.dto.paraphrase.*;
@@ -39,13 +36,9 @@ public class ParaphraseController {
 
     @ResponseBody
     @RequestMapping(value = "/queryParaphrases", method = {RequestMethod.POST})
-    public WrapperResponse<PageInfo> queryParaphrases(@RequestBody QueryParaphrasesDTO pdto) {
-        Page<ParaphraseDO> objects = PageHelper.startPage(pdto.getPagenum(), pdto.getPagesize());
-
-        bo.queryParaphrases(pdto.getCondition());
-
-        PageInfo<ParaphraseDO> pageInfo = new PageInfo<>(objects);
-        return WrapperResponse.ok(pageInfo);
+    public WrapperResponse<List<ParaphraseDO>> queryParaphrases(@RequestBody QueryParaphrasesDTO pdto) {
+        List<ParaphraseDO> ret = bo.queryParaphrases(pdto.getCondition());
+        return WrapperResponse.ok(ret);
     }
 
     @ResponseBody
@@ -118,12 +111,8 @@ public class ParaphraseController {
 
     @ResponseBody
     @RequestMapping(value = "/queryParaphrasesInGroup", method = {RequestMethod.POST})
-    public WrapperResponse<PageInfo> queryParaphrasesInGroup(@RequestBody QueryParaphrasesInGroupDTO pdto) {
-        Page<ParaphraseDO> objects = PageHelper.startPage(pdto.getPagenum(), pdto.getPagesize());
-
-        bo.queryParaphrasesInGroup(pdto.getGroupId(), pdto.getCondition());
-
-        PageInfo<ParaphraseDO> pageInfo = new PageInfo<>(objects);
-        return WrapperResponse.ok(pageInfo);
+    public WrapperResponse<List<ParaphraseDO>> queryParaphrasesInGroup(@RequestBody QueryParaphrasesInGroupDTO pdto) {
+        List<ParaphraseDO> ret = bo.queryParaphrasesInGroup(pdto.getGroupId(), pdto.getCondition());
+        return WrapperResponse.ok(ret);
     }
 }
