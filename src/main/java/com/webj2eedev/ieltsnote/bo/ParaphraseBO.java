@@ -1,10 +1,8 @@
 package com.webj2eedev.ieltsnote.bo;
 
 import com.webj2eedev.ieltsnote.dao.ParaphraseDao;
-import com.webj2eedev.ieltsnote.entity.paraphrase.ParaphraseDO;
-import com.webj2eedev.ieltsnote.entity.paraphrase.ParaphraseGroupDO;
-import com.webj2eedev.ieltsnote.entity.paraphrase.ParaphraseGroupDtlDO;
-import com.webj2eedev.ieltsnote.entity.paraphrase.ParaphraseNewlyAddedDO;
+import com.webj2eedev.ieltsnote.dto.paraphrase.AddParaphraseRewriteDTO;
+import com.webj2eedev.ieltsnote.entity.paraphrase.*;
 import com.webj2eedev.ieltsnote.utils.minio.MINIOClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,6 +48,21 @@ public class ParaphraseBO {
         List<ParaphraseNewlyAddedDO> rDos = dao.queryParaphraseNewlyAdded();
         return rDos;
     }
+
+    //////////////////////////////////////////////////
+
+    public int addParaphraseRewrite(AddParaphraseRewriteDTO pdto) {
+        ParaphraseRewriteDO pdo = ParaphraseRewriteDO.builder()
+                .paraphraseId(pdto.getParaphraseId()).rewrite(pdto.getRewrite()).comment(pdto.getComment()).creator(pdto.getCreator()).build();
+
+        dao.addParaphraseRewrite(pdo);
+
+        return pdo.getUid();
+
+    }
+
+
+    //////////////////////////////////////////////////
 
     public int addParaphraseGroup(int creator) {
         ParaphraseGroupDO pdo = ParaphraseGroupDO.builder().creator(creator).build();

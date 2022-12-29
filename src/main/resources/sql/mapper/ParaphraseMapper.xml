@@ -78,6 +78,24 @@
         ) t
     </select>
 
+
+
+    <insert id="addParaphraseRewrite" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.paraphrase.ParaphraseRewriteDO">
+        INSERT INTO paraphrase_rewrite
+        (paraphrase_id, rewrite, comment, creator, create_time)
+        VALUES(#{paraphraseId}, #{rewrite}, #{comment}, #{creator}, NOW());
+    </insert>
+
+
+
+
+
+
+
+
+
+
+
     <insert id="addParaphraseGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.paraphrase.ParaphraseGroupDO">
         INSERT INTO paraphrase_group
         (comment, creator, create_time)

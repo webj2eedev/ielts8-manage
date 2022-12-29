@@ -1,9 +1,6 @@
 package com.webj2eedev.ieltsnote.dao;
 
-import com.webj2eedev.ieltsnote.entity.paraphrase.ParaphraseDO;
-import com.webj2eedev.ieltsnote.entity.paraphrase.ParaphraseGroupDO;
-import com.webj2eedev.ieltsnote.entity.paraphrase.ParaphraseGroupDtlDO;
-import com.webj2eedev.ieltsnote.entity.paraphrase.ParaphraseNewlyAddedDO;
+import com.webj2eedev.ieltsnote.entity.paraphrase.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -20,6 +17,12 @@ public interface ParaphraseDao {
     List<ParaphraseDO> queryParaphrases(@Param("condition") String condition);
 
     List<ParaphraseNewlyAddedDO> queryParaphraseNewlyAdded();
+
+    //////////////////////////////////////////////////
+
+    void addParaphraseRewrite(ParaphraseRewriteDO pdo);
+
+    //////////////////////////////////////////////////
 
     Long addParaphraseGroup(ParaphraseGroupDO pdo);
 

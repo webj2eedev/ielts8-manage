@@ -93,6 +93,20 @@ public class ParaphraseController {
         return WrapperResponse.ok(ret);
     }
 
+    //////////////////////////////////////////////////
+
+    @ResponseBody
+    @RequestMapping(value = "/addParaphraseRewrite", method = {RequestMethod.POST})
+    public WrapperResponse<ParaphraseDO> addParaphraseRewrite(@RequestBody AddParaphraseRewriteDTO pdto) {
+        int uid = bo.addParaphraseRewrite(pdto);
+
+        ParaphraseDO ret = bo.queryParaphrase(uid);
+
+        return WrapperResponse.ok(ret);
+    }
+
+    //////////////////////////////////////////////////
+
     @ResponseBody
     @RequestMapping(value = "/addParaphraseGroup", method = {RequestMethod.POST})
     public WrapperResponse<Integer> addParaphraseGroup(@RequestBody AddParaphraseGroupDTO pdto) {
