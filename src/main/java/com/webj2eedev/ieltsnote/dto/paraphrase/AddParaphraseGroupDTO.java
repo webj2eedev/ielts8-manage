@@ -1,4 +1,4 @@
-package com.webj2eedev.ieltsnote.dto.sentence;
+package com.webj2eedev.ieltsnote.dto.paraphrase;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +11,6 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddSentenceGroupDTO implements Serializable {
+public class AddParaphraseGroupDTO implements Serializable {
     private Integer creator;
 }
