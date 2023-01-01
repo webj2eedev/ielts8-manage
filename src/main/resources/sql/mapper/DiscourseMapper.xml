@@ -91,7 +91,7 @@
 
 
     <insert id="addDiscourseExample" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.discourse.DiscourseExampleDO">
-        INSERT INTO paraphrase_rewrite
+        INSERT INTO discourse_example
         (discourse_id, example, comment, creator, create_time)
         VALUES(#{discourseId}, #{example}, #{comment}, #{creator}, NOW());
     </insert>
