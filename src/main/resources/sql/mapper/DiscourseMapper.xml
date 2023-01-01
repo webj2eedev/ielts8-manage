@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webj2eedev.ieltsnote.dao.DiscourseDao">
+    <insert id="addDiscourse" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.discourse.DiscourseDO">
+        INSERT INTO discourse
+        (type, text, comment, creator, create_time)
+        VALUES(#{type}, #{text}, #{comment}, #{creator}, NOW());
+    </insert>
+
+    <delete id="deleteDiscourse">
+        delete FROM discourse
+        WHERE uid = #{uid}
+    </delete>
+
+    <update id="updateDiscourse" parameterType="com.webj2eedev.ieltsnote.entity.discourse.DiscourseDO">
+        update discourse
+        set
+            update_time = NOW()
+            <if test="type!=null">
+                , type = #{type}
+            </if >
+            <if test="text!=null">
+                , text = #{text}
+            </if >
+            <if test="comment!=null">
+                , comment = #{comment}
+            </if >
+        WHERE
+            uid = #{uid}
+    </update>
+
+    <select id="queryDiscourse" resultType="com.webj2eedev.ieltsnote.entity.discourse.DiscourseDO">
+        select
+            uid,
+            type,
+            text,
+            '' as example,
+            comment,
+            creator,
+            create_time,
+            update_time
+        from discourse
+        WHERE
+            uid = #{uid}
+    </select>
+
+    <select id="queryDiscourses" resultType="com.webj2eedev.ieltsnote.entity.discourse.DiscourseDO">
+        select
+            p.uid,
+            p.type,
+            p.text,
+            pr.example,
+            p.comment,
+            p.creator,
+            p.create_time,
+            p.update_time
+        from discourse p
+        left join discourse_example pr
+            on p.uid = pr.discourse_id
+        WHERE
+            1 = 1
+            <if test="condition!=null and condition!=''">
+                and p.text like '%#{condition}%'
+            </if >
+        ORDER by
+        case
+            when p.update_time is null then p.create_time
+            else p.update_time
+        end desc
+    </select>
+
+    <select id="queryDiscourseNewlyAdded" resultType="com.webj2eedev.ieltsnote.entity.discourse.DiscourseNewlyAddedDO">
+        select
+            t.time,
+            t.count as `increment`,
+            sum(t.count) over( order by t.time) as total
+        from (
+            select
+                count(1) `count`,
+                DATE_FORMAT(create_time , '%Y-%m-%d') `time`
+            from
+                discourse w
+            group by
+                time
+            order by
+                time
+        ) t
+    </select>
+
+
+
+
+    <insert id="addDiscourseExample" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.discourse.DiscourseExampleDO">
+        INSERT INTO paraphrase_rewrite
+        (discourse_id, example, comment, creator, create_time)
+        VALUES(#{discourseId}, #{example}, #{comment}, #{creator}, NOW());
+    </insert>
+
+
+
+
+
+
+    <insert id="addDiscourseGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.discourse.DiscourseGroupDO">
+        INSERT INTO discourse_group
+        (comment, creator, create_time)
+        VALUES(#{comment}, #{creator}, NOW());
+    </insert>
+
+    <insert id="addDiscourseInGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.discourse.DiscourseGroupDtlDO">
+        INSERT INTO discourse_group_dtl
+        (group_id, discourse_id, comment, creator, create_time)
+        VALUES(#{groupId}, #{discourseId}, #{comment}, #{creator}, NOW());
+    </insert>
+
+    <delete id="deleteDiscourseInGroup">
+        DELETE FROM discourse_group_dtl
+        WHERE group_id = #{groupId} and discourse_id=#{discourseId};
+    </delete>
+
+    <select id="queryDiscoursesInGroup" resultType="com.webj2eedev.ieltsnote.entity.discourse.DiscourseDO">
+        select
+            w.uid,
+            w.type,
+            w.text,
+            pr.example,
+            w.comment,
+            w.creator,
+            w.create_time,
+            w.update_time
+        from
+            discourse w
+        inner join discourse_group_dtl wrd
+            on
+                w.uid = wrd.discourse_id
+                and wrd.group_id = #{groupId}
+            <if test="condition!=null and condition!=''">
+                and w.text like '%#{condition}%'
+            </if >
+        left join discourse_example pr
+            on
+                w.uid = pr.discourse_id
+        ORDER by
+        case
+            when w.update_time is null then w.create_time
+            else w.update_time
+        end desc
+    </select>
+
+</mapper>
+
