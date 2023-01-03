@@ -54,7 +54,7 @@
         update writing_sample
         set
             update_time = NOW()
-        <if test="title!=null ">
+        <if test="title!=null">
             , title = #{title}
         </if >
         <if test="content!=null">

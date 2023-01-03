@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/writing")
@@ -95,15 +97,20 @@ public class WritingController {
     }
 
 
+    // 注意：这里需要符合CKEditor上传文件的协议，直接返回{uploaded:"true", url: xxx}
     @ResponseBody
     @RequestMapping(value = "/uploadImage", method = {RequestMethod.POST})
-    public WrapperResponse<String> uploadImage(@RequestParam(value = "image") MultipartFile image) {
+    public Map<String, String> uploadImage(@RequestParam(value = "upload") MultipartFile image) {
         try {
             String imageId = "MD_EDITOR_IMAGE_"+ UUID.randomUUID().toString();
 
             minio.putObject(WRITING_BUCKET_NAME, imageId, image.getInputStream(), image.getSize(), image.getContentType());
 
-            return WrapperResponse.ok(imageId);
+            Map<String, String> ret = new HashMap();
+            ret.put("uploaded", "true");
+            ret.put("url", "/minio/"+WRITING_BUCKET_NAME+"/"+imageId);
+
+            return ret;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
