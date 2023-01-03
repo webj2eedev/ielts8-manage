@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webj2eedev.ieltsnote.dao.SemanticsDao">
+    <insert id="addSemantics" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.semantics.SemanticsDO">
+        INSERT INTO semantics
+        (type, text, comment, creator, create_time)
+        VALUES(#{type}, #{text}, #{comment}, #{creator}, NOW());
+    </insert>
+
+    <delete id="deleteSemantics">
+        delete FROM semantics
+        WHERE uid = #{uid}
+    </delete>
+
+    <update id="updateSemantics" parameterType="com.webj2eedev.ieltsnote.entity.semantics.SemanticsDO">
+        update semantics
+        set
+            update_time = NOW()
+            <if test="type!=null">
+                , type = #{type}
+            </if >
+            <if test="text!=null">
+                , text = #{text}
+            </if >
+            <if test="comment!=null">
+                , comment = #{comment}
+            </if >
+        WHERE
+            uid = #{uid}
+    </update>
+
+    <select id="querySemantics" resultType="com.webj2eedev.ieltsnote.entity.semantics.SemanticsDO">
+        select
+            uid,
+            type,
+            text,
+            '' as example,
+            comment,
+            creator,
+            create_time,
+            update_time
+        from semantics
+        WHERE
+            uid = #{uid}
+    </select>
+
+    <select id="querySemanticss" resultType="com.webj2eedev.ieltsnote.entity.semantics.SemanticsDO">
+        select
+            p.uid,
+            p.type,
+            p.text,
+            pr.example,
+            p.comment,
+            p.creator,
+            p.create_time,
+            p.update_time
+        from semantics p
+        left join semantics_example pr
+            on p.uid = pr.semantics_id
+        WHERE
+            1 = 1
+            <if test="condition!=null and condition!=''">
+                and p.text like '%#{condition}%'
+            </if >
+        ORDER by
+        case
+            when p.update_time is null then p.create_time
+            else p.update_time
+        end desc
+    </select>
+
+    <select id="querySemanticsNewlyAdded" resultType="com.webj2eedev.ieltsnote.entity.semantics.SemanticsNewlyAddedDO">
+        select
+            t.time,
+            t.count as `increment`,
+            sum(t.count) over( order by t.time) as total
+        from (
+            select
+                count(1) `count`,
+                DATE_FORMAT(create_time , '%Y-%m-%d') `time`
+            from
+                semantics w
+            group by
+                time
+            order by
+                time
+        ) t
+    </select>
+
+
+
+
+    <insert id="addSemanticsExample" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.semantics.SemanticsExampleDO">
+        INSERT INTO semantics_example
+        (semantics_id, example, comment, creator, create_time)
+        VALUES(#{semanticsId}, #{example}, #{comment}, #{creator}, NOW());
+    </insert>
+
+
+
+
+
+
+    <insert id="addSemanticsGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.semantics.SemanticsGroupDO">
+        INSERT INTO semantics_group
+        (comment, creator, create_time)
+        VALUES(#{comment}, #{creator}, NOW());
+    </insert>
+
+    <insert id="addSemanticsInGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.semantics.SemanticsGroupDtlDO">
+        INSERT INTO semantics_group_dtl
+        (group_id, semantics_id, comment, creator, create_time)
+        VALUES(#{groupId}, #{semanticsId}, #{comment}, #{creator}, NOW());
+    </insert>
+
+    <delete id="deleteSemanticsInGroup">
+        DELETE FROM semantics_group_dtl
+        WHERE group_id = #{groupId} and semantics_id=#{semanticsId};
+    </delete>
+
+    <select id="querySemanticssInGroup" resultType="com.webj2eedev.ieltsnote.entity.semantics.SemanticsDO">
+        select
+            w.uid,
+            w.type,
+            w.text,
+            pr.example,
+            w.comment,
+            w.creator,
+            w.create_time,
+            w.update_time
+        from
+            semantics w
+        inner join semantics_group_dtl wrd
+            on
+                w.uid = wrd.semantics_id
+                and wrd.group_id = #{groupId}
+            <if test="condition!=null and condition!=''">
+                and w.text like '%#{condition}%'
+            </if >
+        left join semantics_example pr
+            on
+                w.uid = pr.semantics_id
+        ORDER by
+        case
+            when w.update_time is null then w.create_time
+            else w.update_time
+        end desc
+    </select>
+
+</mapper>
+
