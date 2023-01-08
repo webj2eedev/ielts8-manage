@@ -26,7 +26,7 @@ public interface ParaphraseDao {
 
     Long addParaphraseInGroup(ParaphraseGroupDtlDO pdo);
 
-    Long deleteParaphraseInGroup(@Param("groupId") Integer groupId, @Param("ParaphraseId") Integer ParaphraseId);
+    Long deleteParaphraseInGroup(@Param("groupId") Integer groupId, @Param("paraphraseId") Integer ParaphraseId);
 
     List<ParaphraseDO> queryParaphrasesInGroup(@Param("groupId") int groupId, @Param("condition") String condition);
 }

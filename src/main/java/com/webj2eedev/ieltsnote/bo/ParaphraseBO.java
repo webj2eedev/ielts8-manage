@@ -73,12 +73,12 @@ public class ParaphraseBO {
         return pdo.getUid();
     }
 
-    public Long deleteParaphraseInGroup(int groupId, int wordId, boolean cascade) {
+    public Long deleteParaphraseInGroup(int groupId, int paraphraseId, boolean cascade) {
         if (cascade) {
-            dao.deleteParaphraseInGroup(groupId, wordId);
-            return dao.deleteParaphrase(wordId);
+            dao.deleteParaphraseInGroup(groupId, paraphraseId);
+            return dao.deleteParaphrase(paraphraseId);
         } else {
-            return dao.deleteParaphraseInGroup(groupId, wordId);
+            return dao.deleteParaphraseInGroup(groupId, paraphraseId);
         }
     }
 
