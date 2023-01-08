@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webj2eedev.ieltsnote.dao.GrammarDao">
+    <select id="queryCatetory" resultType="com.webj2eedev.ieltsnote.entity.grammar.GrammarCategoryDO">
+        SELECT id, parent_id, `order`, label, comment, creator, create_time, update_time
+        FROM
+            grammar_category
+        order by
+            if(ISNULL(`order`), 0, `order`) asc, label
+    </select>
+
+    <insert id="addSiblingCategory" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="com.webj2eedev.ieltsnote.dto.grammar.AddSiblingCategoryDTO">
+        insert into grammar_category (parent_id, label, creator, create_time)
+        values
+            (#{parentId}, #{label}, #{creator}, NOW())
+    </insert>
+
+    <insert id="addChildCategory" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="com.webj2eedev.ieltsnote.dto.grammar.AddChildCategoryDTO">
+        insert into grammar_category (parent_id, label, creator, create_time)
+        values
+            (#{id}, #{label}, #{creator}, NOW())
+    </insert>
+
+    <update id="updateCategory" parameterType="com.webj2eedev.ieltsnote.entity.grammar.GrammarCategoryDO">
+        update grammar_category
+        set
+            update_time = NOW()
+            <if test="label!=null and label!=''">
+                , label = #{label}
+            </if >
+        WHERE
+            id = #{id}
+    </update>
+</mapper>
+
