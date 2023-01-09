@@ -21,7 +21,7 @@ public class MaterialBO {
         return pdo.getUid();
     }
 
-    public int deleteMaterial(int uid) {
+    public Long deleteMaterial(int uid) {
         return dao.deleteMaterial(uid);
     }
 

@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface MaterialDao {
     int addMaterial(MaterialDO pDo);
-    int deleteMaterial(@Param("uid") int uid);
+    Long deleteMaterial(@Param("uid") int uid);
 
     Long updateMaterial(MaterialDO pDo);
 

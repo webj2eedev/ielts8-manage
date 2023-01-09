@@ -31,5 +31,34 @@
         WHERE
             id = #{id}
     </update>
+
+    <insert id="addGrammarMaterial" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid" parameterType="com.webj2eedev.ieltsnote.dto.grammar.AddGrammarMaterialDTO">
+        INSERT INTO grammar_material
+        (category_id, material_id, comment, creator, create_time)
+        VALUES(#{categoryId}, #{materialId}, #{comment}, #{creator}, NOW());
+    </insert>
+
+    <select id="queryGrammarMaterialList" resultType="com.webj2eedev.ieltsnote.entity.grammar.GrammarMaterialDO">
+        select
+            gm.uid,
+            gm.category_id,
+            gm.material_id,
+            left(m.content, 100) as materialContentCut,
+            gm.comment,
+            gm.creator,
+            gm.create_time,
+            gm.update_time
+        from
+            grammar_material gm ,
+            material m
+        where
+            gm.material_id = m.uid
+            and gm.category_id = #{categoryId}
+    </select>
+
+    <delete id="deleteGrammarMaterial">
+        DELETE FROM grammar_material
+        WHERE uid = #{uid}
+    </delete>
 </mapper>
 

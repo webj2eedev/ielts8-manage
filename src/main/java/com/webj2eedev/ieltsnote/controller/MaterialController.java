@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/material")
@@ -35,8 +37,8 @@ public class MaterialController {
 
     @ResponseBody
     @RequestMapping(value = "/deleteMaterial", method = {RequestMethod.POST})
-    public WrapperResponse<Integer> deleteMaterial(@RequestBody DeleteMaterialDTO pdto) {
-        int id = bo.deleteMaterial(pdto.getUid());
+    public WrapperResponse<Long> deleteMaterial(@RequestBody DeleteMaterialDTO pdto) {
+        Long id = bo.deleteMaterial(pdto.getUid());
         return WrapperResponse.ok(id);
     }
 
@@ -161,17 +163,18 @@ public class MaterialController {
 
     @ResponseBody
     @RequestMapping(value = "/uploadImage", method = {RequestMethod.POST})
-    public WrapperResponse<String> uploadImage(@RequestParam(value = "image") MultipartFile image) {
+    public Map<String, String> uploadImage(@RequestParam(value = "upload") MultipartFile image) {
         String imageId = UUID.randomUUID().toString();
 
         try {
             minio.putObject(MATERIAL_BUCKET_NAME, imageId, image.getInputStream(), image.getSize(), image.getContentType());
+
+            Map<String, String> ret = new HashMap();
+            ret.put("uploaded", "true");
+            ret.put("url", "/minio/"+MATERIAL_BUCKET_NAME+"/"+imageId);
+            return ret;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        String url = minio.getObjectPersistUrl(MATERIAL_BUCKET_NAME, imageId);
-
-        return WrapperResponse.ok(url);
     }
 }
