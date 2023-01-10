@@ -65,17 +65,17 @@ public class SentenceBO {
         return pdo.getUid();
     }
 
-    public Long deleteSentenceInGroup(int groupId, int wordId, boolean cascade) {
+    public Long deleteSentenceInGroup(int groupId, int sentenceId, boolean cascade) {
         if (cascade) {
-            dao.deleteSentenceInGroup(groupId, wordId);
-            return dao.deleteSentence(wordId);
+            dao.deleteSentenceInGroup(groupId, sentenceId);
+            return dao.deleteSentence(sentenceId);
         } else {
-            return dao.deleteSentenceInGroup(groupId, wordId);
+            return dao.deleteSentenceInGroup(groupId, sentenceId);
         }
     }
 
-    public List<SentenceDO> querySentencesInGroup(int refId, String condition) {
-        return dao.querySentencesInGroup(refId, condition);
+    public List<SentenceDO> querySentencesInGroup(int groupId) {
+        return dao.querySentencesInGroup(groupId);
     }
 
 }

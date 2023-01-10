@@ -2,12 +2,10 @@ package com.webj2eedev.ieltsnote.controller;
 
 import com.webj2eedev.ieltsnote.bo.GrammarBO;
 import com.webj2eedev.ieltsnote.common.web.WrapperResponse;
-import com.webj2eedev.ieltsnote.dto.grammar.AddChildCategoryDTO;
-import com.webj2eedev.ieltsnote.dto.grammar.AddGrammarMaterialDTO;
-import com.webj2eedev.ieltsnote.dto.grammar.AddSiblingCategoryDTO;
-import com.webj2eedev.ieltsnote.dto.grammar.QueryMaterialListDTO;
+import com.webj2eedev.ieltsnote.dto.grammar.*;
 import com.webj2eedev.ieltsnote.entity.grammar.GrammarCategoryDO;
 import com.webj2eedev.ieltsnote.entity.grammar.GrammarMaterialDO;
+import com.webj2eedev.ieltsnote.entity.grammar.GrammarSentenceDO;
 import com.webj2eedev.ieltsnote.utils.minio.MINIOClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +26,16 @@ public class GrammarController {
 
 
     @ResponseBody
-    @RequestMapping(value = "/queryCatetory", method = {RequestMethod.POST})
-    public WrapperResponse<List<GrammarCategoryDO>> queryCatetory() {
-        List<GrammarCategoryDO> ret = bo.queryCatetory();
+    @RequestMapping(value = "/queryCategory", method = {RequestMethod.POST})
+    public WrapperResponse<List<GrammarCategoryDO>> queryCategory() {
+        List<GrammarCategoryDO> ret = bo.queryCategory();
+        return WrapperResponse.ok(ret);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/queryLeafCategory", method = {RequestMethod.POST})
+    public WrapperResponse<List<GrammarCategoryDO>> queryLeafCatetory() {
+        List<GrammarCategoryDO> ret = bo.queryLeafCategory();
         return WrapperResponse.ok(ret);
     }
 
@@ -71,6 +76,38 @@ public class GrammarController {
         }
 
         List<GrammarMaterialDO> ret = bo.queryGrammarMaterialList(pdto.getCategoryId());
+        return WrapperResponse.ok(ret);
+    }
+
+    //////////////////////////////////////////////////////
+
+
+    @ResponseBody
+    @RequestMapping(value = "/addGrammarSentenceGroup", method = {RequestMethod.POST})
+    public WrapperResponse<Integer> addGrammarSentenceGroup(@RequestBody AddGrammarSentenceGroupDTO pdto) {
+        int ret = bo.addGrammarSentenceGroup(pdto.getCreator());
+        return WrapperResponse.ok(ret);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/addGrammarSentenceInGroup", method = {RequestMethod.POST})
+    public WrapperResponse<Integer> addGrammarSentenceInGroup(@RequestBody AddGrammarSentenceInGroupDTO pdto) {
+        Integer ret = bo.addGrammarSentenceInGroup(pdto.getGroupId(), pdto.getGrammarCategoryId(), pdto.getGrammarSentenceId(), pdto.getCreator());
+        return WrapperResponse.ok(ret);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/deleteGrammarSentenceInGroup", method = {RequestMethod.POST})
+    public WrapperResponse<Long> deleteGrammarSentenceInGroup(@RequestBody DeleteGrammarSentenceInGroupDTO pdto) {
+        Long ret = bo.deleteGrammarSentenceInGroup(pdto.getUid());
+        return WrapperResponse.ok(ret);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/queryGrammarSentenceListInGroup", method = {RequestMethod.POST})
+    public WrapperResponse<List<GrammarSentenceDO>> queryGrammarSentenceListInGroup(@RequestBody QueryGrammarSentenceListInGroupDTO pdto) {
+        List<GrammarSentenceDO> ret = bo.queryGrammarSentenceListInGroup(pdto.getGroupId());
+
         return WrapperResponse.ok(ret);
     }
 }

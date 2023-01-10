@@ -6,8 +6,7 @@ import com.webj2eedev.ieltsnote.dto.grammar.AddChildCategoryDTO;
 import com.webj2eedev.ieltsnote.dto.grammar.AddGrammarMaterialDTO;
 import com.webj2eedev.ieltsnote.dto.grammar.AddSiblingCategoryDTO;
 import com.webj2eedev.ieltsnote.dto.grammar.DeleteGrammarMaterialDTO;
-import com.webj2eedev.ieltsnote.entity.grammar.GrammarCategoryDO;
-import com.webj2eedev.ieltsnote.entity.grammar.GrammarMaterialDO;
+import com.webj2eedev.ieltsnote.entity.grammar.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -20,8 +19,13 @@ public class GrammarBO {
     @Resource
     private MaterialDao materialDao;
 
-    public List<GrammarCategoryDO> queryCatetory() {
-        List<GrammarCategoryDO> ret = dao.queryCatetory();
+    public List<GrammarCategoryDO> queryCategory() {
+        List<GrammarCategoryDO> ret = dao.queryCategory();
+        return ret;
+    }
+
+    public List<GrammarCategoryDO> queryLeafCategory() {
+        List<GrammarCategoryDO> ret = dao.queryLeafCategory();
         return ret;
     }
 
@@ -56,6 +60,30 @@ public class GrammarBO {
         Long ret1 = dao.deleteGrammarMaterial(pdto.getUid());
         Long ret2 = materialDao.deleteMaterial(pdto.getMaterialId());
         return ret1 + ret2;
+    }
+
+    ////////////////////////////////////////////////////////////////
+
+
+    public int addGrammarSentenceGroup(int creator) {
+        GrammarSentenceGroupDO pdo = GrammarSentenceGroupDO.builder().creator(creator).build();
+        dao.addGrammarSentenceGroup(pdo);
+        return pdo.getUid();
+    }
+
+    public int addGrammarSentenceInGroup(int groupId, int grammarCategoryId, int grammarSentenceId, int creator) {
+        GrammarSentenceGroupDtlDO pdo = GrammarSentenceGroupDtlDO.builder().groupId(groupId).grammarCategoryId(grammarCategoryId).grammarSentenceId(grammarSentenceId).creator(creator).build();
+        dao.addGrammarSentenceInGroup(pdo);
+        return pdo.getUid();
+    }
+
+    public Long deleteGrammarSentenceInGroup(int uid) {
+        return dao.deleteGrammarSentenceInGroup(uid);
+
+    }
+
+    public List<GrammarSentenceDO> queryGrammarSentenceListInGroup(int groupId) {
+        return dao.queryGrammarSentenceListInGroup(groupId);
     }
 
 }

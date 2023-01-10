@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.webj2eedev.ieltsnote.dao.GrammarDao">
-    <select id="queryCatetory" resultType="com.webj2eedev.ieltsnote.entity.grammar.GrammarCategoryDO">
+    <select id="queryCategory" resultType="com.webj2eedev.ieltsnote.entity.grammar.GrammarCategoryDO">
         SELECT id, parent_id, `order`, label, comment, creator, create_time, update_time
         FROM
             grammar_category
         order by
             if(ISNULL(`order`), 0, `order`) asc, label
+    </select>
+
+    <select id="queryLeafCategory" resultType="com.webj2eedev.ieltsnote.entity.grammar.GrammarCategoryDO">
+        select
+            b.id, b.parent_id, b.`order`, b.label, b.comment, b.creator, b.create_time, b.update_time
+        from
+            grammar_category a
+        right join grammar_category b on
+            a.parent_id = b.id
+        group by
+            b.id
+        having
+            count(a.id) = 0
     </select>
 
     <insert id="addSiblingCategory" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="com.webj2eedev.ieltsnote.dto.grammar.AddSiblingCategoryDTO">
@@ -43,7 +56,7 @@
             gm.uid,
             gm.category_id,
             gm.material_id,
-            left(m.content, 100) as materialContentCut,
+            left(m.content, 200) as materialContentCut,
             gm.comment,
             gm.creator,
             gm.create_time,
@@ -60,5 +73,54 @@
         DELETE FROM grammar_material
         WHERE uid = #{uid}
     </delete>
+
+
+
+    <insert id="addGrammarSentenceGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.grammar.GrammarSentenceGroupDO">
+        INSERT INTO grammar_sentence_group
+        (comment, creator, create_time)
+        VALUES(#{comment}, #{creator}, NOW());
+    </insert>
+
+    <insert id="addGrammarSentenceInGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.grammar.GrammarSentenceGroupDtlDO">
+        INSERT INTO grammar_sentence_group_dtl
+        (group_id, grammar_category_id, grammar_sentence_id, comment, creator, create_time)
+        VALUES(#{groupId}, #{grammarCategoryId}, #{grammarSentenceId}, #{comment}, #{creator}, NOW());
+    </insert>
+
+    <delete id="deleteGrammarSentenceInGroup">
+        DELETE FROM grammar_sentence_group_dtl
+        WHERE uid = #{uid}
+    </delete>
+
+    <select id="queryGrammarSentenceListInGroup" resultType="com.webj2eedev.ieltsnote.entity.grammar.GrammarSentenceDO">
+        select
+            ggd.uid,
+            ggd.group_id,
+            ggd.grammar_category_id,
+            gc.label as grammar_category_label,
+            ggd.grammar_sentence_id,
+            s.content as grammar_sentence_content,
+            s.comment as grammar_sentence_comment,
+            ggd.comment,
+            ggd.creator,
+            ggd.create_time,
+            ggd.update_time
+        from
+            grammar_category gc,
+            grammar_sentence_group_dtl ggd,
+            sentence s
+        where
+            gc.id = ggd.grammar_category_id
+            and ggd.grammar_sentence_id = s.uid
+            and ggd.group_id = #{groupId}
+        order by
+            case
+                when ggd.update_time is null then ggd.create_time
+                else ggd.update_time
+            end desc
+    </select>
+
+
 </mapper>
 

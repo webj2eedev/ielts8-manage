@@ -116,12 +116,8 @@ public class SentenceController {
 
     @ResponseBody
     @RequestMapping(value = "/querySentencesInGroup", method = {RequestMethod.POST})
-    public WrapperResponse<PageInfo> querySentencesInGroup(@RequestBody QuerySentencesInGroupDTO pdto) {
-        Page<SentenceDO> objects = PageHelper.startPage(pdto.getPagenum(), pdto.getPagesize());
-
-        bo.querySentencesInGroup(pdto.getGroupId(), pdto.getCondition());
-
-        PageInfo<SentenceDO> pageInfo = new PageInfo<>(objects);
-        return WrapperResponse.ok(pageInfo);
+    public WrapperResponse<List<SentenceDO>> querySentencesInGroup(@RequestBody QuerySentencesInGroupDTO pdto) {
+        List<SentenceDO> ret = bo.querySentencesInGroup(pdto.getGroupId());
+        return WrapperResponse.ok(ret);
     }
 }

@@ -109,9 +109,6 @@
         where
             w.uid = wrd.sentence_id
             and wrd.group_id = #{groupId}
-            <if test="condition!=null and condition!=''">
-                and w.content like '%#{condition}%'
-            </if >
         ORDER by
         case
             when w.update_time is null then w.create_time

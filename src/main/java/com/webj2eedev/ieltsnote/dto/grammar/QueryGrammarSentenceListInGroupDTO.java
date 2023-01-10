@@ -1,4 +1,4 @@
-package com.webj2eedev.ieltsnote.dto.sentence;
+package com.webj2eedev.ieltsnote.dto.grammar;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +11,6 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuerySentencesInGroupDTO implements Serializable {
+public class QueryGrammarSentenceListInGroupDTO implements Serializable {
     private Integer groupId;
 }

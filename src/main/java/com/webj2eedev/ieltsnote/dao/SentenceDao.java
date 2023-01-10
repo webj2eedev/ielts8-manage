@@ -25,7 +25,7 @@ public interface SentenceDao {
 
     Long addSentenceInGroup(SentenceGroupDtlDO pdo);
 
-    Long deleteSentenceInGroup(@Param("groupId") Integer groupId, @Param("SentenceId") Integer SentenceId);
+    Long deleteSentenceInGroup(@Param("groupId") Integer groupId, @Param("sentenceId") Integer sentenceId);
 
-    List<SentenceDO> querySentencesInGroup(@Param("groupId") int groupId, @Param("condition") String condition);
+    List<SentenceDO> querySentencesInGroup(@Param("groupId") int groupId);
 }
