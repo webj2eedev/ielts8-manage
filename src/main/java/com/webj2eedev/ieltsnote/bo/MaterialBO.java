@@ -15,9 +15,6 @@ public class MaterialBO {
     public int addMaterial(MaterialDO pdo) {
         dao.addMaterial(pdo);
 
-        MaterialLogDO log = MaterialLogDO.builder().materialId(pdo.getUid()).operation(MaterialLogDO.Operation.ADD).creator(pdo.getCreator()).build();
-        dao.log(log);
-
         return pdo.getUid();
     }
 
@@ -38,6 +35,7 @@ public class MaterialBO {
         return dao.queryMaterials(condition);
     }
 
+    ////////////////////////////////////////////////////////////////
 
     public int addMaterialAttachment(MaterialAttachmentDO pdo) {
         dao.addMaterialAttachment(pdo);
@@ -62,14 +60,10 @@ public class MaterialBO {
         return dao.queryMaterialAttachments(materialId);
     }
 
+    ////////////////////////////////////////////////////////////////
 
-    public Long log(MaterialLogDO pdo) {
-        Long ret = dao.log(pdo);
-        return ret;
-    }
-
-    public List<MaterialNewlyAddedDO> summarizeMaterialNewlyAdded() {
-        List<MaterialNewlyAddedDO> ret = dao.summarizeMaterialNewlyAdded();
+    public List<MaterialNewlyAddedDO> queryMaterialNewlyAdded() {
+        List<MaterialNewlyAddedDO> ret = dao.queryMaterialNewlyAdded();
         return ret;
     }
 

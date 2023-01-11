@@ -84,20 +84,22 @@
         WHERE uid=#{uid};
     </delete>
 
-    <insert id="log" parameterType="com.webj2eedev.ieltsnote.entity.material.MaterialLogDO">
-        INSERT INTO material_log
-        (material_id, operation, creator, log_time)
-        VALUES(#{materialId}, #{operation}, #{creator}, NOW());
-    </insert>
-
-    <select id="summarizeMaterialNewlyAdded" resultType="com.webj2eedev.ieltsnote.entity.material.MaterialNewlyAddedDO">
+    <select id="queryMaterialNewlyAdded" resultType="com.webj2eedev.ieltsnote.entity.material.MaterialNewlyAddedDO">
         select
-            count(distinct material_id) count,
-            DATE_FORMAT(log_time, '%Y-%m-%d') time
-        from
-            material_log sl
-        group by
-            time
+            t.time,
+            t.count as `increment`,
+            sum(t.count) over( order by t.time) as total
+        from (
+            select
+                count(1) `count`,
+                DATE_FORMAT(create_time , '%Y-%m-%d') `time`
+            from
+                material w
+            group by
+                time
+            order by
+                time
+        ) t
     </select>
 
 

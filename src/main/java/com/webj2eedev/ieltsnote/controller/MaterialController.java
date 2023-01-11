@@ -9,7 +9,6 @@ import com.webj2eedev.ieltsnote.common.web.WrapperResponse;
 import com.webj2eedev.ieltsnote.dto.material.*;
 import com.webj2eedev.ieltsnote.entity.material.MaterialAttachmentDO;
 import com.webj2eedev.ieltsnote.entity.material.MaterialDO;
-import com.webj2eedev.ieltsnote.entity.material.MaterialLogDO;
 import com.webj2eedev.ieltsnote.entity.material.MaterialNewlyAddedDO;
 import com.webj2eedev.ieltsnote.utils.minio.MINIOClient;
 import com.webj2eedev.ieltsnote.utils.uuid.UUID;
@@ -151,16 +150,9 @@ public class MaterialController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/log", method = {RequestMethod.POST})
-    public WrapperResponse<Long> log(@RequestBody MaterialLogDO pdo) {
-        Long ret = bo.log(pdo);
-        return WrapperResponse.ok(ret);
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/summarizeMaterialNewlyAdded", method = {RequestMethod.POST})
-    public WrapperResponse<List<MaterialNewlyAddedDO>> summarizeMaterialNewlyAdded() {
-        List<MaterialNewlyAddedDO> ret = bo.summarizeMaterialNewlyAdded();
+    @RequestMapping(value = "/queryMaterialNewlyAdded", method = {RequestMethod.POST})
+    public WrapperResponse<List<MaterialNewlyAddedDO>> queryMaterialNewlyAdded() {
+        List<MaterialNewlyAddedDO> ret = bo.queryMaterialNewlyAdded();
         return WrapperResponse.ok(ret);
     }
 

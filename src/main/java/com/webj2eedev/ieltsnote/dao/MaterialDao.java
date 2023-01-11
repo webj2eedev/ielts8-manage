@@ -24,9 +24,9 @@ public interface MaterialDao {
 
     List<MaterialAttachmentDO> queryMaterialAttachments(@Param("materialId") int materialId);
 
+    //////////////////////////////////////////////////
 
-    Long log(MaterialLogDO pdo);
-    List<MaterialNewlyAddedDO> summarizeMaterialNewlyAdded();
+    List<MaterialNewlyAddedDO> queryMaterialNewlyAdded();
 
     //////////////////////////////////////////////////
 
