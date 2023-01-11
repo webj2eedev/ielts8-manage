@@ -7,7 +7,10 @@ import com.github.pagehelper.PageInfo;
 import com.webj2eedev.ieltsnote.bo.MaterialBO;
 import com.webj2eedev.ieltsnote.common.web.WrapperResponse;
 import com.webj2eedev.ieltsnote.dto.material.*;
-import com.webj2eedev.ieltsnote.entity.material.*;
+import com.webj2eedev.ieltsnote.entity.material.MaterialAttachmentDO;
+import com.webj2eedev.ieltsnote.entity.material.MaterialDO;
+import com.webj2eedev.ieltsnote.entity.material.MaterialLogDO;
+import com.webj2eedev.ieltsnote.entity.material.MaterialNewlyAddedDO;
 import com.webj2eedev.ieltsnote.utils.minio.MINIOClient;
 import com.webj2eedev.ieltsnote.utils.uuid.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -176,5 +179,36 @@ public class MaterialController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    //////////////////////////////////////////////////
+
+    @ResponseBody
+    @RequestMapping(value = "/addMaterialGroup", method = {RequestMethod.POST})
+    public WrapperResponse<Integer> addMaterialGroup(@RequestBody AddMaterialGroupDTO pdto) {
+        int ret = bo.addMaterialGroup(pdto.getCreator());
+        return WrapperResponse.ok(ret);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/addMaterialInGroup", method = {RequestMethod.POST})
+    public WrapperResponse<Integer> addMaterialInGroup(@RequestBody AddMaterialInGroupDTO pdto) {
+        Integer ret = bo.addMaterialInGroup(pdto.getGroupId(), pdto.getMaterialId(), pdto.getCreator());
+        return WrapperResponse.ok(ret);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/deleteMaterialInGroup", method = {RequestMethod.POST})
+    public WrapperResponse<Long> deleteMaterialInGroup(@RequestBody DeleteMaterialInGroupDTO pdto) {
+        Long ret = bo.deleteMaterialInGroup(pdto.getGroupId(), pdto.getMaterialId());
+        return WrapperResponse.ok(ret);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/queryMaterialListInGroup", method = {RequestMethod.POST})
+    public WrapperResponse<List<MaterialDO>> queryMaterialListInGroup(@RequestBody QueryMaterialListInGroupDTO pdto) {
+        List<MaterialDO> ret = bo.queryMaterialListInGroup(pdto.getGroupId());
+        return WrapperResponse.ok(ret);
     }
 }

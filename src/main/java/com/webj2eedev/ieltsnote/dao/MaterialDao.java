@@ -1,9 +1,6 @@
 package com.webj2eedev.ieltsnote.dao;
 
-import com.webj2eedev.ieltsnote.entity.material.MaterialAttachmentDO;
-import com.webj2eedev.ieltsnote.entity.material.MaterialDO;
-import com.webj2eedev.ieltsnote.entity.material.MaterialLogDO;
-import com.webj2eedev.ieltsnote.entity.material.MaterialNewlyAddedDO;
+import com.webj2eedev.ieltsnote.entity.material.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -30,4 +27,14 @@ public interface MaterialDao {
 
     Long log(MaterialLogDO pdo);
     List<MaterialNewlyAddedDO> summarizeMaterialNewlyAdded();
+
+    //////////////////////////////////////////////////
+
+    Long addMaterialGroup(MaterialGroupDO pdo);
+
+    Long addMaterialInGroup(MaterialGroupDtlDO pdo);
+
+    Long deleteMaterialInGroup(@Param("groupId") Integer groupId, @Param("materialId") Integer materialId);
+
+    List<MaterialDO> queryMaterialListInGroup(@Param("groupId") int groupId);
 }

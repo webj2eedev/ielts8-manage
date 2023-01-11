@@ -53,9 +53,11 @@ public class MaterialBO {
         Long ret = dao.updateMaterialAttachment(pdo);
         return ret;
     }
+
     public MaterialAttachmentDO queryMaterialAttachment(int uid) {
         return dao.queryMaterialAttachment(uid);
     }
+
     public List<MaterialAttachmentDO> queryMaterialAttachments(int materialId) {
         return dao.queryMaterialAttachments(materialId);
     }
@@ -69,5 +71,27 @@ public class MaterialBO {
     public List<MaterialNewlyAddedDO> summarizeMaterialNewlyAdded() {
         List<MaterialNewlyAddedDO> ret = dao.summarizeMaterialNewlyAdded();
         return ret;
+    }
+
+    ////////////////////////////////////////////////////////////////
+    public int addMaterialGroup(int creator) {
+        MaterialGroupDO pdo = MaterialGroupDO.builder().creator(creator).build();
+        dao.addMaterialGroup(pdo);
+        return pdo.getUid();
+    }
+
+    public int addMaterialInGroup(int groupId, int materialId, int creator) {
+        MaterialGroupDtlDO pdo = MaterialGroupDtlDO.builder().groupId(groupId).materialId(materialId).creator(creator).build();
+        dao.addMaterialInGroup(pdo);
+        return pdo.getUid();
+    }
+
+    public Long deleteMaterialInGroup(int groupId, int materialId) {
+        dao.deleteMaterialInGroup(groupId, materialId);
+        return dao.deleteMaterial(materialId);
+    }
+
+    public List<MaterialDO> queryMaterialListInGroup(int refId) {
+        return dao.queryMaterialListInGroup(refId);
     }
 }

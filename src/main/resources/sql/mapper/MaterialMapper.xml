@@ -99,5 +99,50 @@
         group by
             time
     </select>
+
+
+
+
+
+
+
+
+    <insert id="addMaterialGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.material.MaterialGroupDO">
+        INSERT INTO material_group
+        (comment, creator, create_time)
+        VALUES(#{comment}, #{creator}, NOW());
+    </insert>
+
+    <insert id="addMaterialInGroup" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid"  parameterType="com.webj2eedev.ieltsnote.entity.material.MaterialGroupDtlDO">
+        INSERT INTO material_group_dtl
+        (group_id, material_id, comment, creator, create_time)
+        VALUES(#{groupId}, #{materialId}, #{comment}, #{creator}, NOW())
+    </insert>
+
+    <delete id="deleteMaterialInGroup">
+        DELETE FROM material_group_dtl
+        WHERE group_id = #{groupId} and material_id = #{materialId}
+    </delete>
+
+    <select id="queryMaterialListInGroup" resultType="com.webj2eedev.ieltsnote.entity.material.MaterialDO">
+        select
+            w.uid,
+            w.content,
+            w.comment,
+            w.creator,
+            w.create_time,
+            w.update_time
+        from
+            material w,
+            material_group_dtl wrd
+        where
+            w.uid = wrd.material_id
+            and wrd.group_id = #{groupId}
+        ORDER by
+            case
+                when w.update_time is null then w.create_time
+                else w.update_time
+            end desc
+    </select>
 </mapper>
 
