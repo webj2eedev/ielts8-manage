@@ -122,5 +122,25 @@
     </select>
 
 
+    <select id="queryGrammarNewlyAdded" resultType="com.webj2eedev.ieltsnote.entity.grammar.GrammarNewlyAddedDO">
+        select
+            t.time,
+            t.count as `increment`,
+            sum(t.count) over( order by t.time) as total
+        from (
+            select
+                count(1) `count`,
+                DATE_FORMAT(create_time , '%Y-%m-%d') `time`
+            from
+                grammar_material w
+            group by
+                time
+            order by
+                time
+        ) t
+    </select>
+
+
+
 </mapper>
 

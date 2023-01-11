@@ -5,6 +5,7 @@ import com.webj2eedev.ieltsnote.common.web.WrapperResponse;
 import com.webj2eedev.ieltsnote.dto.grammar.*;
 import com.webj2eedev.ieltsnote.entity.grammar.GrammarCategoryDO;
 import com.webj2eedev.ieltsnote.entity.grammar.GrammarMaterialDO;
+import com.webj2eedev.ieltsnote.entity.grammar.GrammarNewlyAddedDO;
 import com.webj2eedev.ieltsnote.entity.grammar.GrammarSentenceDO;
 import com.webj2eedev.ieltsnote.utils.minio.MINIOClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +82,15 @@ public class GrammarController {
 
     //////////////////////////////////////////////////////
 
+    @ResponseBody
+    @RequestMapping(value = "/queryGrammarNewlyAdded", method = {RequestMethod.POST})
+    public WrapperResponse<List<GrammarNewlyAddedDO>> queryGrammarNewlyAdded() {
+        List<GrammarNewlyAddedDO> ret = bo.queryGrammarNewlyAdded();
+        return WrapperResponse.ok(ret);
+    }
 
+
+    //////////////////////////////////////////////////
     @ResponseBody
     @RequestMapping(value = "/addGrammarSentenceGroup", method = {RequestMethod.POST})
     public WrapperResponse<Integer> addGrammarSentenceGroup(@RequestBody AddGrammarSentenceGroupDTO pdto) {

@@ -46,6 +46,13 @@ public class GrammarBO {
 
     ////////////////////////////////////////////////////////////
 
+    public List<GrammarNewlyAddedDO> queryGrammarNewlyAdded() {
+        List<GrammarNewlyAddedDO> rDos = dao.queryGrammarNewlyAdded();
+        return rDos;
+    }
+
+    ////////////////////////////////////////////////////////////////
+
     public Integer addGrammarMaterial(AddGrammarMaterialDTO pdto) {
         dao.addGrammarMaterial(pdto);
         return pdto.getUid();

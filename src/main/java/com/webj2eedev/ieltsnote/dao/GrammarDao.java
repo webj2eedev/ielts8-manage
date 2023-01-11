@@ -21,7 +21,9 @@ public interface GrammarDao {
     Long updateCategory(GrammarCategoryDO pDo);
 
     ///////////////////////////////////////////////////
+    List<GrammarNewlyAddedDO> queryGrammarNewlyAdded();
 
+    //////////////////////////////////////////////////
     Long addGrammarMaterial(AddGrammarMaterialDTO pDo);
 
     List<GrammarMaterialDO> queryGrammarMaterialList(@Param("categoryId") Integer categoryId);
