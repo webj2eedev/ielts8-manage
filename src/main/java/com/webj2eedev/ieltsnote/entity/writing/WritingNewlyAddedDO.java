@@ -9,6 +9,6 @@ import java.math.BigDecimal;
 @Data
 public class WritingNewlyAddedDO {
     private String time;
-    private BigDecimal task1;
-    private BigDecimal task2;
+    private Long increment;
+    private BigDecimal total;
 }

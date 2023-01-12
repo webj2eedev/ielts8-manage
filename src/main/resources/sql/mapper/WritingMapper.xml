@@ -75,26 +75,21 @@
 
     <select id="queryWritingNewlyAdded" resultType="com.webj2eedev.ieltsnote.entity.writing.WritingNewlyAddedDO">
         select
-            B.practice_day,
-            sum(if(B.part = 1, B.question_cnt,	0)) as task1,
-            sum(if(B.part = 2, B.question_cnt,	0)) as task2
+            t.time,
+            t.count as `increment`,
+            sum(t.count) over( order by t.time) as total
         from (
             select
-                sl.part,
-                count(distinct sample_id) question_cnt,
-                DATE_FORMAT(log_time, '%Y-%m-%d') practice_day
+                count(1) `count`,
+                DATE_FORMAT(create_time , '%Y-%m-%d') `time`
             from
-                writing_log sl
-            where
-                creator = #{creator}
-                and sample_id != -1
+                writing_sample w
             group by
-                practice_day, sl.part
-            ) as B
-        group by B.practice_day
+                time
+            order by
+                time
+        ) t
     </select>
-
-
 
     <insert id="addSampleLink" parameterType="com.webj2eedev.ieltsnote.entity.writing.WritingSampleLinkDO">
         INSERT INTO ielts8.writing_sample_link
