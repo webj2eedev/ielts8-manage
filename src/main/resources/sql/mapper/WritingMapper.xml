@@ -67,12 +67,6 @@
             uid = #{uid}
     </update>
 
-    <insert id="log" parameterType="com.webj2eedev.ieltsnote.entity.writing.WritingLogDO">
-        INSERT INTO writing_log
-        (`operation`, part, category_id, sample_id, creator, log_time)
-        VALUES(#{operation}, #{part}, #{categoryId}, #{sampleId}, #{creator}, NOW());
-    </insert>
-
     <select id="queryWritingNewlyAdded" resultType="com.webj2eedev.ieltsnote.entity.writing.WritingNewlyAddedDO">
         select
             t.time,

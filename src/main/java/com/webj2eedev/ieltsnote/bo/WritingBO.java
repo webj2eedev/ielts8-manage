@@ -41,10 +41,6 @@ public class WritingBO {
 
     public int addSample(WritingSampleDO pdo) {
         dao.addSample(pdo);
-
-        WritingLogDO log = WritingLogDO.builder().part(2).categoryId(pdo.getCategoryId()).sampleId(pdo.getUid()).operation(WritingLogDO.Operation.ADD).creator(pdo.getCreator()).build();
-        dao.log(log);
-
         return pdo.getUid();
     }
 
@@ -55,11 +51,6 @@ public class WritingBO {
 
     public Long deleteSample(Integer uid) {
         Long ret = dao.deleteSample(uid);
-        return ret;
-    }
-
-    public Long log(WritingLogDO pDo) {
-        Long ret = dao.log(pDo);
         return ret;
     }
 

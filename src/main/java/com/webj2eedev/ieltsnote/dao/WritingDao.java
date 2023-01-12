@@ -24,8 +24,6 @@ public interface WritingDao {
 
     Long deleteSample(@Param("uid") Integer uid);
 
-    Long log(WritingLogDO pDo);
-
     List<WritingNewlyAddedDO> queryWritingNewlyAdded(@Param("creator") Integer creator);
 
     Long addSampleLink(WritingSampleLinkDO pDo);
